@@ -7,5 +7,6 @@ class DealAction extends BaseAction with ActorLogging {
 
   def process(context: Context) {
     log.info("Deal action called: ", self)
+
   }
 }

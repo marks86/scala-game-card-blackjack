@@ -6,7 +6,7 @@ import com.gmail.namavirs86.blackjack.actions.{BaseAction, ResponseActionProcess
 
 class TestAction extends BaseAction with ActorLogging {
 
-  def process(context: Context) {
-    sender() ! ResponseActionProcess(context)
+  def process(context: Context): Unit = {
+    log.info("processing test action")
   }
 }

@@ -21,7 +21,8 @@ object RequestType extends Enumeration {
 
 final case class GameConfig(
                              id: String,
-                             actions: Map[RequestType, String]
+                             actions: Map[RequestType, String],
+                             responseAdapter: String
                            )
 
 
