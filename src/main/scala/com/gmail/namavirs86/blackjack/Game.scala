@@ -1,15 +1,16 @@
 package com.gmail.namavirs86.blackjack
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import akka.util.Timeout
-import akka.pattern.ask
+//import akka.util.Timeout
+//import akka.pattern.ask
+import com.gmail.namavirs86.blackjack.Definitions.{Context, GameConfig}
 
-import scala.concurrent.Await
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
+//import scala.concurrent.Await
+//import scala.concurrent.Future
+//import scala.concurrent.ExecutionContext.Implicits.global
+//import scala.concurrent.duration._
 import com.gmail.namavirs86.blackjack.Game.RequestPlay
-import com.gmail.namavirs86.blackjack.RequestType.RequestType
+import com.gmail.namavirs86.blackjack.Definitions.RequestType.RequestType
 import com.gmail.namavirs86.blackjack.actions.{RequestActionProcess, ResponseActionProcess}
 import com.gmail.namavirs86.blackjack.adapters.{RequestCreateResponse, ResponseCreateResponse}
 

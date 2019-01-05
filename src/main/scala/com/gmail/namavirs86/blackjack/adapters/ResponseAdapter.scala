@@ -1,7 +1,7 @@
 package com.gmail.namavirs86.blackjack.adapters
 
 import akka.actor.{Actor, ActorRef}
-import com.gmail.namavirs86.blackjack.Context
+import com.gmail.namavirs86.blackjack.Definitions.Context
 
 final case class RequestCreateResponse(playerRef: ActorRef, context: Context)
 
