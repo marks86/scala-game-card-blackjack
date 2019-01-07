@@ -20,9 +20,20 @@ object Definitions {
                             gameContext: GameContext
                           )
 
-  object RequestType extends Enumeration {
-    type RequestType = Value
-    val DEAL, HIT, STAND, DOUBLE, SPLIT = Value
+  object RequestType {
+
+    sealed abstract class RequestType
+
+    case object DEAL extends RequestType
+
+    case object HIT extends RequestType
+
+    case object STAND extends RequestType
+
+    case object DOUBLE extends RequestType
+
+    case object SPLIT extends RequestType
+
   }
 
   final case class GameConfig(
