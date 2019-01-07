@@ -1,10 +1,8 @@
 package com.gmail.namavirs86.blackjack
 
-import com.gmail.namavirs86.blackjack.Definitions.CardValue.CardValue
+import com.gmail.namavirs86.blackjack.Definitions.Rank.Rank
 import com.gmail.namavirs86.blackjack.Definitions.RequestType.RequestType
 import com.gmail.namavirs86.blackjack.Definitions.Suit.Suit
-
-import scala.collection.mutable.ListBuffer
 
 object Definitions {
 
@@ -33,30 +31,55 @@ object Definitions {
                                responseAdapter: String
                              )
 
-  object Suit extends Enumeration {
-    type Suit = Value
-    val CLUBS, DIAMONDS, HEARTS, SPADES = Value
+  object Suit {
+
+    sealed abstract class Suit
+
+    case object CLUBS extends Suit
+
+    case object SPADES extends Suit
+
+    case object HEARTS extends Suit
+
+    case object DIAMONDS extends Suit
+
+    val suits = List(CLUBS, SPADES, HEARTS, DIAMONDS)
   }
 
-  object CardValue extends Enumeration {
-    type CardValue = Value
-    val TWO = Value(2)
-    val THREE = Value(3)
-    val FOUR = Value(4)
-    val FIVE = Value(5)
-    val SIX = Value(6)
-    val SEVEN = Value(7)
-    val EIGHT = Value(8)
-    val NINE = Value(9)
-    val TEN = Value(10)
-    val JACK = Value(10)
-    val QUEEN = Value(10)
-    val KING = Value(10)
-    val ACE = Value(11)
+  object Rank {
+
+    sealed abstract class Rank
+
+    case object TWO extends Rank
+
+    case object THREE extends Rank
+
+    case object FOUR extends Rank
+
+    case object FIVE extends Rank
+
+    case object SIX extends Rank
+
+    case object SEVEN extends Rank
+
+    case object EIGHT extends Rank
+
+    case object NINE extends Rank
+
+    case object TEN extends Rank
+
+    case object JACK extends Rank
+
+    case object QUEEN extends Rank
+
+    case object KING extends Rank
+
+    case object ACE extends Rank
+
+    val ranks = List(TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE)
   }
 
-  case class Card(value: CardValue, suit: Suit)
+  case class Card(rank: Rank, suit: Suit)
 
-  type Deck = ListBuffer[Card]
 }
 

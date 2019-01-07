@@ -2,6 +2,7 @@ package com.gmail.namavirs86.blackjack
 
 import akka.actor.ActorSystem
 import akka.testkit.{TestKit, TestProbe}
+import com.gmail.namavirs86.blackjack.Definitions._
 import com.gmail.namavirs86.blackjack.actions.ResponseActionProcess
 import com.gmail.namavirs86.blackjack.adapters.ResponseAdapter
 import com.gmail.namavirs86.blackjack.helpers.TestAction

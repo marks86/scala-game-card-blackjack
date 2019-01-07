@@ -1,8 +1,8 @@
 package com.gmail.namavirs86.blackjack.helpers
 
 import akka.actor.ActorLogging
-import com.gmail.namavirs86.blackjack.Context
-import com.gmail.namavirs86.blackjack.actions.{BaseAction, ResponseActionProcess}
+import com.gmail.namavirs86.blackjack.Definitions.Context
+import com.gmail.namavirs86.blackjack.actions.BaseAction
 
 class TestAction extends BaseAction with ActorLogging {
 
