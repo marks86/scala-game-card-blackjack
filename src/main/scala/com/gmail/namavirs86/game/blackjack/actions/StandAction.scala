@@ -1,6 +1,6 @@
-package com.gmail.namavirs86.blackjack.actions
+package com.gmail.namavirs86.game.blackjack.actions
 
-import akka.actor.{Actor, Props}
+import akka.actor.Actor
 
 class StandAction extends Actor {
 

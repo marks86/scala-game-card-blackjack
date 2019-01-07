@@ -1,4 +1,4 @@
-package com.gmail.namavirs86.blackjack.actions
+package com.gmail.namavirs86.game.blackjack.actions
 
 import akka.actor.ActorSystem
 import akka.testkit.{TestKit, TestProbe}

@@ -1,7 +1,7 @@
-package com.gmail.namavirs86.blackjack
+package com.gmail.namavirs86.game.core
 
-import com.gmail.namavirs86.blackjack.Definitions.{Card, Rank, Suit}
-import com.gmail.namavirs86.blackjack.random.RandomCheating
+import com.gmail.namavirs86.game.core.Definitions.{Card, Rank, Suit}
+import com.gmail.namavirs86.game.core.random.RandomCheating
 import org.scalatest.{Matchers, WordSpecLike}
 
 import scala.collection.mutable.ListBuffer

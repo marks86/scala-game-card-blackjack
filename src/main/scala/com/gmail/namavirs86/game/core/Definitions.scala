@@ -1,8 +1,8 @@
-package com.gmail.namavirs86.blackjack
+package com.gmail.namavirs86.game.core
 
-import com.gmail.namavirs86.blackjack.Definitions.Rank.Rank
-import com.gmail.namavirs86.blackjack.Definitions.RequestType.RequestType
-import com.gmail.namavirs86.blackjack.Definitions.Suit.Suit
+import com.gmail.namavirs86.game.core.Definitions.Rank.Rank
+import com.gmail.namavirs86.game.core.Definitions.RequestType.RequestType
+import com.gmail.namavirs86.game.core.Definitions.Suit.Suit
 
 object Definitions {
 
@@ -82,4 +82,3 @@ object Definitions {
   case class Card(rank: Rank, suit: Suit)
 
 }
-

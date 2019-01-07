@@ -1,4 +1,4 @@
-package com.gmail.namavirs86.blackjack.random
+package com.gmail.namavirs86.game.core.random
 
 import scala.collection.mutable.ListBuffer
 import scala.util.Random

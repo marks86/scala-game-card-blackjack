@@ -1,7 +1,7 @@
-package com.gmail.namavirs86.blackjack.actions
+package com.gmail.namavirs86.game.core.actions
 
 import akka.actor.{Actor, ActorRef}
-import com.gmail.namavirs86.blackjack.Definitions.Context
+import com.gmail.namavirs86.game.core.Definitions.Context
 
 
 final case class RequestActionProcess(playerRef: ActorRef, context: Context)

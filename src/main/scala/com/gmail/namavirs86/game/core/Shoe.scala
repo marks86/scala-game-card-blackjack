@@ -1,6 +1,7 @@
-package com.gmail.namavirs86.blackjack
+package com.gmail.namavirs86.game.core
 
-import com.gmail.namavirs86.blackjack.Definitions._
+import com.gmail.namavirs86.game.core.Definitions._
+
 import scala.util.Random
 
 class Shoe(rng: Random, deckCount: Int) {
