@@ -21,7 +21,7 @@ class DealActionSpec(_system: ActorSystem)
   override def afterAll: Unit = {
     shutdown(system)
   }
-  
+
   "A DealAction action" should {
     "process" in {
       val probe = TestProbe()
@@ -32,7 +32,7 @@ class DealActionSpec(_system: ActorSystem)
       action.tell(DealAction.RequestActionProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[DealAction.ResponseActionProcess]
-      val GameContext(dealerHand, playerHand) = response.flow.gameContext
+      val GameContext(dealerHand, playerHand, _) = response.flow.gameContext
 
       dealerHand shouldBe ListBuffer(Card(Rank.TWO,Suit.CLUBS))
       playerHand shouldBe ListBuffer(Card(Rank.THREE, Suit.CLUBS), Card(Rank.FOUR, Suit.CLUBS))

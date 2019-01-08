@@ -16,6 +16,7 @@ object Helpers {
       GameContext(
         dealerHand = ListBuffer[Card](),
         playerHand = ListBuffer[Card](),
+        roundEnded = true,
       ),
       rng = new RandomCheating(cheat)
     )

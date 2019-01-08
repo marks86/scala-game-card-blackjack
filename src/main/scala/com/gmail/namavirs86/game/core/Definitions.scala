@@ -24,7 +24,8 @@ object Definitions {
 
   final case class GameContext(
                               dealerHand: ListBuffer[Card],
-                              playerHand: ListBuffer[Card]
+                              playerHand: ListBuffer[Card],
+                              roundEnded: Boolean,
                               )
 
   final case class Flow(

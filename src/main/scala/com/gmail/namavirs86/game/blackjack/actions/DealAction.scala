@@ -18,7 +18,7 @@ class DealAction(deckCount: Int) extends BaseAction {
   private val shoe = new Shoe(deckCount)
 
   def process(flow: Flow) {
-    val GameContext(dealerHand, playerHand) = flow.gameContext
+    val GameContext(dealerHand, playerHand, _) = flow.gameContext
     val rng = flow.rng
 
     dealerHand += shoe.draw(rng)

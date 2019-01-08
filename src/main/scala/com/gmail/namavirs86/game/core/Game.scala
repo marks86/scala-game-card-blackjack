@@ -39,20 +39,32 @@ class Game(config: GameConfig) extends Actor with ActorLogging {
 
   override def receive: Receive = {
     case RequestPlay(flow: Flow) ⇒
-      val requestType = flow.requestContext.requestType
-      actions.get(requestType) match {
-        case Some(ref) ⇒
-          ref ! RequestActionProcess(sender, flow)
-        case None ⇒
-          log.info("Missing action for request type: {}", requestType)
-      }
+      requestPlay(flow)
 
     case ResponseActionProcess(playerRef: ActorRef, flow: Flow) ⇒
-      responseAdapter ! RequestCreateResponse(playerRef, flow)
-      log.info("Received ResponseActionProcess")
+      responseActionProcess(playerRef, flow)
 
     case ResponseCreateResponse(playerRef: ActorRef) ⇒
-      log.info("Response created")
+      responseCreateResponse(playerRef)
+  }
+
+  private def requestPlay(flow: Flow): Unit = {
+    val requestType = flow.requestContext.requestType
+    actions.get(requestType) match {
+      case Some(ref) ⇒
+        ref ! RequestActionProcess(sender, flow)
+      case None ⇒
+        log.info("Missing action for request type: {}", requestType)
+    }
+  }
+
+  private def responseActionProcess(playerRef: ActorRef, flow: Flow): Unit = {
+    responseAdapter ! RequestCreateResponse(playerRef, flow)
+    log.info("Received ResponseActionProcess")
+  }
+
+  private def responseCreateResponse(playerRef: ActorRef): Unit = {
+    log.info("Response created")
   }
 }
 
