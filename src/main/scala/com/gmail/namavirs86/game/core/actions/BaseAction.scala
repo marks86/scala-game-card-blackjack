@@ -6,9 +6,9 @@ import com.gmail.namavirs86.game.core.actions.BaseAction.{RequestActionProcess, 
 
 trait BaseActionMessages {
 
-  final case class RequestActionProcess(playerRef: ActorRef, context: Flow)
+  final case class RequestActionProcess(playerRef: ActorRef, flow: Flow)
 
-  final case class ResponseActionProcess(playerRef: ActorRef, context: Flow)
+  final case class ResponseActionProcess(playerRef: ActorRef, flow: Flow)
 
 }
 
