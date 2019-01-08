@@ -21,18 +21,7 @@ class DealActionSpec(_system: ActorSystem)
   override def afterAll: Unit = {
     shutdown(system)
   }
-
-  val flow = Flow(
-    RequestContext(
-      requestId = 0,
-      requestType = RequestType.DEAL),
-    GameContext(
-      dealerHand = ListBuffer[Card](),
-      playerHand = ListBuffer[Card](),
-    ),
-    rng = new RandomCheating()
-  )
-
+  
   "A DealAction action" should {
     "process" in {
       val probe = TestProbe()
@@ -45,8 +34,8 @@ class DealActionSpec(_system: ActorSystem)
       val response = probe.expectMsgType[DealAction.ResponseActionProcess]
       val GameContext(dealerHand, playerHand) = response.flow.gameContext
 
-      println(dealerHand)
-      println(playerHand)
+      dealerHand shouldBe ListBuffer(Card(Rank.TWO,Suit.CLUBS))
+      playerHand shouldBe ListBuffer(Card(Rank.THREE, Suit.CLUBS), Card(Rank.FOUR, Suit.CLUBS))
     }
   }
 }
