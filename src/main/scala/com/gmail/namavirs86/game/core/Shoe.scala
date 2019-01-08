@@ -6,11 +6,7 @@ import scala.util.Random
 
 class Shoe(deckCount: Int) {
 
-  private var shoe = List[Card]()
-
-  def init(): Unit = {
-    shoe = createShoe()
-  }
+  private val shoe = createShoe()
 
   def draw(rng: Random): Card = {
     val index = rng.nextInt(shoe.length)

@@ -13,7 +13,6 @@ class ShoeSpec extends WordSpecLike with Matchers {
       val cheat = ListBuffer[Int](0)
       val rng = new RandomCheating(cheat)
       val shoe = new Shoe(1)
-      shoe.init()
 
       val card = shoe.draw(rng)
       card shouldBe Card(Rank.TWO, Suit.CLUBS)

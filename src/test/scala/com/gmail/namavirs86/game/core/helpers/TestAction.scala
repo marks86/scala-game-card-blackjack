@@ -14,4 +14,6 @@ class TestAction(a: Int) extends BaseAction with ActorLogging {
   def process(flow: Flow): Unit = {
     log.info("processing test action {}", a)
   }
+
+  def validateRequest(flow: Flow): Unit = {}
 }

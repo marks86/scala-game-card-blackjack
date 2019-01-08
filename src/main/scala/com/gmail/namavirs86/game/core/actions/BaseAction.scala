@@ -1,6 +1,6 @@
 package com.gmail.namavirs86.game.core.actions
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef}
 import com.gmail.namavirs86.game.core.Definitions.Flow
 import com.gmail.namavirs86.game.core.actions.BaseAction.{RequestActionProcess, ResponseActionProcess}
 
@@ -19,6 +19,7 @@ abstract class BaseAction extends Actor with ActorLogging {
 
   override def receive: Receive = {
     case RequestActionProcess(playerRef: ActorRef, flow: Flow) ⇒
+      validateRequest(flow)
       process(flow)
       sender ! ResponseActionProcess(playerRef, flow)
 
@@ -26,4 +27,6 @@ abstract class BaseAction extends Actor with ActorLogging {
   }
 
   def process(flow: Flow): Unit
+
+  def validateRequest(flow: Flow): Unit
 }

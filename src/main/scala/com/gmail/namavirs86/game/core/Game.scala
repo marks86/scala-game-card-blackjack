@@ -20,7 +20,7 @@ object Game {
 class Game(config: GameConfig) extends Actor with ActorLogging {
 
   private var actions = Map.empty[RequestType, ActorRef]
-  private var responseAdapter: ActorRef = ActorRef.noSender
+  private var responseAdapter: ActorRef = _
 
   override def preStart(): Unit = {
     config.actions.foreach {

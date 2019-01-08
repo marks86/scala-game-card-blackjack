@@ -3,10 +3,11 @@ package com.gmail.namavirs86.game.blackjack.actions
 import akka.actor.ActorSystem
 import akka.testkit.{TestKit, TestProbe}
 import com.gmail.namavirs86.game.core.Definitions._
+import com.gmail.namavirs86.game.core.helpers.Helpers
+import com.gmail.namavirs86.game.core.random.RandomCheating
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
 
 import scala.collection.mutable.ListBuffer
-import scala.util.Random
 
 class DealActionSpec(_system: ActorSystem)
   extends TestKit(_system)
@@ -21,23 +22,31 @@ class DealActionSpec(_system: ActorSystem)
     shutdown(system)
   }
 
+  val flow = Flow(
+    RequestContext(
+      requestId = 0,
+      requestType = RequestType.DEAL),
+    GameContext(
+      dealerHand = ListBuffer[Card](),
+      playerHand = ListBuffer[Card](),
+    ),
+    rng = new RandomCheating()
+  )
+
   "A DealAction action" should {
     "process" in {
       val probe = TestProbe()
       val action = system.actorOf(DealAction.props(1))
-
-      val flow = Flow(
-        RequestContext(
-          requestId = 0,
-          requestType = RequestType.DEAL),
-        GameContext(
-          dealerHand = ListBuffer[Card](),
-          playerHand = ListBuffer[Card](),
-        ),
-        rng = new Random()
-      )
+      val cheat = ListBuffer[Int](0, 1, 2)
+      val flow = Helpers.createFlow(cheat)
 
       action.tell(DealAction.RequestActionProcess(probe.ref, flow), probe.ref)
+
+      val response = probe.expectMsgType[DealAction.ResponseActionProcess]
+      val GameContext(dealerHand, playerHand) = response.flow.gameContext
+
+      println(dealerHand)
+      println(playerHand)
     }
   }
 }
