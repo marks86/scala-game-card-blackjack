@@ -1,8 +1,19 @@
 package com.gmail.namavirs86.game.blackjack.actions
 
-import akka.actor.Actor
+import akka.actor.Props
+import com.gmail.namavirs86.game.core.Definitions.Flow
+import com.gmail.namavirs86.game.core.actions.{BaseAction, BaseActionMessages}
 
-class HitAction extends Actor {
+object HitAction extends BaseActionMessages {
+  def props: Props = Props(new HitAction())
+}
 
-  override def receive: Receive = Actor.emptyBehavior
+class HitAction extends BaseAction {
+  val id = "hitAction"
+
+  def process(flow: Flow): Unit = {
+
+  }
+
+  def validateRequest(flow: Flow): Unit = {}
 }
