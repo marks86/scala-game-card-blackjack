@@ -1,11 +1,18 @@
 package com.gmail.namavirs86.game.core.adapters
 
-import akka.actor.{Actor, ActorRef}
+import akka.actor.{Actor, ActorRef, Props}
 import com.gmail.namavirs86.game.core.Definitions.Flow
+import com.gmail.namavirs86.game.core.adapters.ResponseAdapter.{RequestCreateResponse, ResponseCreateResponse}
 
-final case class RequestCreateResponse(playerRef: ActorRef, context: Flow)
+object ResponseAdapter {
 
-final case class ResponseCreateResponse(playerRef: ActorRef)
+  def props: Props = Props(new ResponseAdapter())
+
+  final case class RequestCreateResponse(playerRef: ActorRef, context: Flow)
+
+  final case class ResponseCreateResponse(playerRef: ActorRef)
+
+}
 
 class ResponseAdapter extends Actor {
 

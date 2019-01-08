@@ -14,7 +14,7 @@ object Definitions {
   final case class GameConfig(
                                id: String,
                                actions: Map[RequestType, Props],
-                               responseAdapter: String
+                               responseAdapter: Props
                              )
 
   final case class RequestContext(

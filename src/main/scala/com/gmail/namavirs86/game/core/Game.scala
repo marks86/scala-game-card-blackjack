@@ -4,7 +4,7 @@ import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 
 import Game.RequestPlay
 import actions.BaseAction.{RequestActionProcess, ResponseActionProcess}
-import adapters.{RequestCreateResponse, ResponseCreateResponse}
+import adapters.ResponseAdapter.{RequestCreateResponse, ResponseCreateResponse}
 import Definitions.RequestType.RequestType
 import Definitions.{Flow, GameConfig}
 
@@ -29,7 +29,7 @@ class Game(config: GameConfig) extends Actor with ActorLogging {
     }
 
     responseAdapter = context.actorOf(
-      Props(Class.forName(config.responseAdapter).asInstanceOf[Class[Actor]]), config.responseAdapter
+      config.responseAdapter
     )
 
     log.info("Game actor started: {}", self)
