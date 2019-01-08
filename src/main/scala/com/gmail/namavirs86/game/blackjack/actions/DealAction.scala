@@ -24,6 +24,8 @@ class DealAction(deckCount: Int) extends BaseAction {
     dealerHand += shoe.draw(rng)
     playerHand += shoe.draw(rng)
     playerHand += shoe.draw(rng)
+
+    flow.gameContext.roundEnded = false
   }
 
   def validateRequest(flow: Flow): Unit = {}

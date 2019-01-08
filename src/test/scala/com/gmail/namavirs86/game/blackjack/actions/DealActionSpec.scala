@@ -23,7 +23,7 @@ class DealActionSpec(_system: ActorSystem)
   }
 
   "A DealAction action" should {
-    "process" in {
+    "draw the cards" in {
       val probe = TestProbe()
       val action = system.actorOf(DealAction.props(1))
       val cheat = ListBuffer[Int](0, 1, 2)
@@ -32,10 +32,11 @@ class DealActionSpec(_system: ActorSystem)
       action.tell(DealAction.RequestActionProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[DealAction.ResponseActionProcess]
-      val GameContext(dealerHand, playerHand, _) = response.flow.gameContext
+      val GameContext(dealerHand, playerHand, roundEnded) = response.flow.gameContext
 
       dealerHand shouldBe ListBuffer(Card(Rank.TWO,Suit.CLUBS))
       playerHand shouldBe ListBuffer(Card(Rank.THREE, Suit.CLUBS), Card(Rank.FOUR, Suit.CLUBS))
+      roundEnded shouldBe false
     }
   }
 }
