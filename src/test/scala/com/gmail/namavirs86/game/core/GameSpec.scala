@@ -21,7 +21,7 @@ class GameSpec(_system: ActorSystem)
 
   val config = GameConfig(
     id = "bj",
-    actions = Map(RequestType.DEAL -> classOf[TestAction].getName),
+    actions = Map(RequestType.DEAL -> TestAction.props(1)),
     responseAdapter = classOf[ResponseAdapter].getName
   )
 
@@ -32,7 +32,7 @@ class GameSpec(_system: ActorSystem)
   "A Game actor" should {
     "process requested action" in {
       val probe = TestProbe()
-      val game = system.actorOf(Game.props(config))
+      val game = system.actorOf(Game.props(config), "gameActor")
 
       val flow = Flow(
         RequestContext(

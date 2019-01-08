@@ -1,12 +1,17 @@
 package com.gmail.namavirs86.game.core.helpers
 
-import akka.actor.ActorLogging
+import akka.actor.{ActorLogging, Props}
 import com.gmail.namavirs86.game.core.Definitions.Flow
-import com.gmail.namavirs86.game.core.actions.BaseAction
+import com.gmail.namavirs86.game.core.actions.{BaseAction, BaseActionMessages}
 
-class TestAction extends BaseAction with ActorLogging {
+object TestAction extends BaseActionMessages {
+  def props(a: Int): Props = Props(new TestAction(a))
+}
+
+class TestAction(a: Int) extends BaseAction with ActorLogging {
+  val id = "testAction"
 
   def process(flow: Flow): Unit = {
-    log.info("processing test action")
+    log.info("processing test action {}", a)
   }
 }

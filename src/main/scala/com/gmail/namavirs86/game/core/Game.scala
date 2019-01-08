@@ -3,7 +3,7 @@ package com.gmail.namavirs86.game.core
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 
 import Game.RequestPlay
-import actions.{RequestActionProcess, ResponseActionProcess}
+import actions.BaseAction.{RequestActionProcess, ResponseActionProcess}
 import adapters.{RequestCreateResponse, ResponseCreateResponse}
 import Definitions.RequestType.RequestType
 import Definitions.{Flow, GameConfig}
@@ -24,10 +24,8 @@ class Game(config: GameConfig) extends Actor with ActorLogging {
 
   override def preStart(): Unit = {
     config.actions.foreach {
-      case (requestType, className) ⇒
-        actions += requestType → context.actorOf(
-          Props(Class.forName(className).asInstanceOf[Class[Actor]]), className
-        )
+      case (requestType, props) ⇒
+        actions += requestType → context.actorOf(props)
     }
 
     responseAdapter = context.actorOf(
