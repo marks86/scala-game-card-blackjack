@@ -14,25 +14,26 @@ object Definitions {
   final case class GameConfig(
                                id: String,
                                actions: Map[RequestType, Props],
-                               responseAdapter: Props
+                               responseAdapter: Props,
+                               behavior: Props,
                              )
 
   final case class RequestContext(
                                    requestId: Long,
-                                   requestType: RequestType
+                                   requestType: RequestType,
                                  )
 
   final case class GameContext(
-                              dealerHand: ListBuffer[Card],
-                              playerHand: ListBuffer[Card],
-                              var roundEnded: Boolean,
+                                dealerHand: ListBuffer[Card],
+                                playerHand: ListBuffer[Card],
+                                var roundEnded: Boolean,
                               )
 
   final case class Flow(
-                            requestContext: RequestContext,
-                            gameContext: GameContext,
-                            rng: Random
-                          )
+                         requestContext: RequestContext,
+                         gameContext: GameContext,
+                         rng: Random,
+                       )
 
   object RequestType {
 
