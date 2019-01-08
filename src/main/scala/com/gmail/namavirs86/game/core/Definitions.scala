@@ -4,7 +4,16 @@ import com.gmail.namavirs86.game.core.Definitions.Rank.Rank
 import com.gmail.namavirs86.game.core.Definitions.RequestType.RequestType
 import com.gmail.namavirs86.game.core.Definitions.Suit.Suit
 
+import scala.collection.mutable.ListBuffer
+import scala.util.Random
+
 object Definitions {
+
+  final case class GameConfig(
+                               id: String,
+                               actions: Map[RequestType, String],
+                               responseAdapter: String
+                             )
 
   final case class RequestContext(
                                    requestId: Long,
@@ -12,12 +21,14 @@ object Definitions {
                                  )
 
   final case class GameContext(
-                                //  var a: Long
+                              dealerHand: ListBuffer[Card],
+                              playerHand: ListBuffer[Card]
                               )
 
-  final case class Context(
+  final case class Flow(
                             requestContext: RequestContext,
-                            gameContext: GameContext
+                            gameContext: GameContext,
+                            rng: Random
                           )
 
   object RequestType {
@@ -35,12 +46,6 @@ object Definitions {
     case object SPLIT extends RequestType
 
   }
-
-  final case class GameConfig(
-                               id: String,
-                               actions: Map[RequestType, String],
-                               responseAdapter: String
-                             )
 
   object Suit {
 

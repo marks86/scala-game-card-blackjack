@@ -4,7 +4,7 @@ import com.gmail.namavirs86.game.core.Definitions._
 
 import scala.util.Random
 
-class Shoe(rng: Random, deckCount: Int) {
+class Shoe(deckCount: Int) {
 
   private var shoe = List[Card]()
 
@@ -12,7 +12,7 @@ class Shoe(rng: Random, deckCount: Int) {
     shoe = createShoe()
   }
 
-  def draw: Card = {
+  def draw(rng: Random): Card = {
     val index = rng.nextInt(shoe.length)
     shoe(index)
   }

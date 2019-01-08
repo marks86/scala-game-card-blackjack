@@ -7,6 +7,9 @@ import com.gmail.namavirs86.game.core.adapters.ResponseAdapter
 import com.gmail.namavirs86.game.core.helpers.TestAction
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
 
+import scala.collection.mutable.ListBuffer
+import scala.util.Random
+
 class GameSpec(_system: ActorSystem)
   extends TestKit(_system)
     with Matchers
@@ -31,16 +34,22 @@ class GameSpec(_system: ActorSystem)
       val probe = TestProbe()
       val game = system.actorOf(Game.props(config))
 
-      val context = Context(
-        RequestContext(0, RequestType.DEAL),
-        GameContext()
+      val flow = Flow(
+        RequestContext(
+          requestId = 0,
+          requestType = RequestType.DEAL),
+        GameContext(
+          dealerHand = ListBuffer[Card](),
+          playerHand = ListBuffer[Card](),
+        ),
+        rng = new Random()
       )
 
-      game.tell(Game.RequestPlay(context), probe.ref)
-//      val response = probe.expectMsgType[ResponseActionProcess]
-//      val requestContext = response.context.requestContext
-//      requestContext.requestId shouldBe 0
-//      requestContext.requestType shouldBe RequestType.DEAL
+      game.tell(Game.RequestPlay(flow), probe.ref)
+      //      val response = probe.expectMsgType[ResponseActionProcess]
+      //      val requestContext = response.context.requestContext
+      //      requestContext.requestId shouldBe 0
+      //      requestContext.requestType shouldBe RequestType.DEAL
     }
   }
 }

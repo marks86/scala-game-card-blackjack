@@ -6,12 +6,12 @@ import Game.RequestPlay
 import actions.{RequestActionProcess, ResponseActionProcess}
 import adapters.{RequestCreateResponse, ResponseCreateResponse}
 import Definitions.RequestType.RequestType
-import Definitions.{Context, GameConfig}
+import Definitions.{Flow, GameConfig}
 
 object Game {
   def props(config: GameConfig): Props = Props(new Game(config))
 
-  final case class RequestPlay(context: Context)
+  final case class RequestPlay(context: Flow)
 
   final case class ResponsePlay()
 
@@ -40,17 +40,17 @@ class Game(config: GameConfig) extends Actor with ActorLogging {
   override def postStop(): Unit = log.info("Game actor stopped: {}", self)
 
   override def receive: Receive = {
-    case RequestPlay(context: Context) ⇒
-      val requestType = context.requestContext.requestType
+    case RequestPlay(flow: Flow) ⇒
+      val requestType = flow.requestContext.requestType
       actions.get(requestType) match {
         case Some(ref) ⇒
-          ref ! RequestActionProcess(sender(), context)
+          ref ! RequestActionProcess(sender, flow)
         case None ⇒
           log.info("Missing action for request type: {}", requestType)
       }
 
-    case ResponseActionProcess(playerRef: ActorRef, context: Context) ⇒
-      responseAdapter ! RequestCreateResponse(playerRef, context)
+    case ResponseActionProcess(playerRef: ActorRef, flow: Flow) ⇒
+      responseAdapter ! RequestCreateResponse(playerRef, flow)
       log.info("Received ResponseActionProcess")
 
     case ResponseCreateResponse(playerRef: ActorRef) ⇒
