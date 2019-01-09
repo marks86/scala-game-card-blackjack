@@ -26,6 +26,7 @@ object Definitions {
   final case class GameContext(
                                 dealerHand: ListBuffer[Card],
                                 playerHand: ListBuffer[Card],
+                                var holeCard: Option[Card],
                                 var roundEnded: Boolean,
                               )
 

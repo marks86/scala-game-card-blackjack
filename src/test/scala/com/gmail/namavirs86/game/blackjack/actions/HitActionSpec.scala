@@ -2,7 +2,7 @@ package com.gmail.namavirs86.game.blackjack.actions
 
 import akka.actor.ActorSystem
 import akka.testkit.{TestKit, TestProbe}
-import com.gmail.namavirs86.game.core.Definitions.{Card, GameContext, Rank, Suit}
+import com.gmail.namavirs86.game.core.Definitions.{Card, Rank, Suit}
 import com.gmail.namavirs86.game.core.helpers.Helpers
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
 
@@ -31,7 +31,8 @@ class HitActionSpec(_system: ActorSystem)
       action.tell(HitAction.RequestActionProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[HitAction.ResponseActionProcess]
-      val GameContext(dealerHand, playerHand, _) = response.flow.gameContext
+      val dealerHand = response.flow.gameContext.dealerHand
+      val playerHand = response.flow.gameContext.playerHand
 
       dealerHand shouldBe ListBuffer()
       playerHand shouldBe ListBuffer(Card(Rank.TWO,Suit.CLUBS))

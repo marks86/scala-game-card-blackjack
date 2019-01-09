@@ -26,16 +26,23 @@ class DealActionSpec(_system: ActorSystem)
     "draw the cards" in {
       val probe = TestProbe()
       val action = system.actorOf(DealAction.props(1))
-      val cheat = ListBuffer[Int](0, 1, 2)
+      val cheat = ListBuffer[Int](0, 1, 2, 3)
       val flow = Helpers.createFlow(cheat)
 
       action.tell(DealAction.RequestActionProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[DealAction.ResponseActionProcess]
-      val GameContext(dealerHand, playerHand, _) = response.flow.gameContext
+      val dealerHand = response.flow.gameContext.dealerHand
+      val playerHand = response.flow.gameContext.playerHand
+      val holeCard = response.flow.gameContext.holeCard
+
+      println(dealerHand)
+      println(playerHand)
+      println(holeCard)
 
       dealerHand shouldBe ListBuffer(Card(Rank.TWO,Suit.CLUBS))
-      playerHand shouldBe ListBuffer(Card(Rank.THREE, Suit.CLUBS), Card(Rank.FOUR, Suit.CLUBS))
+      playerHand shouldBe ListBuffer(Card(Rank.THREE, Suit.CLUBS), Card(Rank.FIVE, Suit.CLUBS))
+      holeCard shouldBe Some(Card(Rank.FOUR, Suit.CLUBS))
     }
   }
 }

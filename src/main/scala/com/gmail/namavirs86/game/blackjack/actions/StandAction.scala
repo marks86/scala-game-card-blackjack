@@ -1,6 +1,6 @@
 package com.gmail.namavirs86.game.blackjack.actions
 
-import akka.actor.{Actor, Props}
+import akka.actor.Props
 import com.gmail.namavirs86.game.core.Definitions.Flow
 import com.gmail.namavirs86.game.core.Shoe
 import com.gmail.namavirs86.game.core.actions.{BaseAction, BaseActionMessages}
