@@ -14,12 +14,6 @@ trait BehaviorMessages {
 
 object Behavior extends BehaviorMessages
 
-// 1. if dealer has any ten or ace, he checks second card and
-//    if its BJ, then card is being revealed
-//    if player has also BJ, then push
-//    otherwise - immediately looses
-
-// 2. if player has BJ, the dealers hole card is being revealed
 abstract class Behavior extends Actor with ActorLogging {
   val id: String
 

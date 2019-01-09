@@ -31,8 +31,8 @@ class HitActionSpec(_system: ActorSystem)
       action.tell(HitAction.RequestActionProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[HitAction.ResponseActionProcess]
-      val dealerHand = response.flow.gameContext.dealerHand
-      val playerHand = response.flow.gameContext.playerHand
+      val dealerHand = response.flow.gameContext.dealer.hand
+      val playerHand = response.flow.gameContext.player.hand
 
       dealerHand shouldBe ListBuffer()
       playerHand shouldBe ListBuffer(Card(Rank.TWO,Suit.CLUBS))

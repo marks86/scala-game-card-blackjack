@@ -15,7 +15,7 @@ final class HitAction extends BaseAction {
   private val shoe = new Shoe(1)
 
   def process(flow: Flow): Unit = {
-    val playerHand = flow.gameContext.playerHand
+    val playerHand = flow.gameContext.player.hand
     val rng = flow.rng
 
     playerHand += shoe.draw(rng)

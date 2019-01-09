@@ -32,8 +32,8 @@ class DealActionSpec(_system: ActorSystem)
       action.tell(DealAction.RequestActionProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[DealAction.ResponseActionProcess]
-      val dealerHand = response.flow.gameContext.dealerHand
-      val playerHand = response.flow.gameContext.playerHand
+      val dealerHand = response.flow.gameContext.dealer.hand
+      val playerHand = response.flow.gameContext.player.hand
       val holeCard = response.flow.gameContext.holeCard
 
       println(dealerHand)

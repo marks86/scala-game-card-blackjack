@@ -11,30 +11,35 @@ import scala.util.Random
 
 object Definitions {
 
-  final case class GameConfig(
-                               id: String,
-                               actions: Map[RequestType, Props],
-                               responseAdapter: Props,
-                               behavior: Props,
-                             )
-
-  final case class RequestContext(
-                                   requestId: Long,
-                                   requestType: RequestType,
-                                 )
-
-  final case class GameContext(
-                                dealerHand: ListBuffer[Card],
-                                playerHand: ListBuffer[Card],
-                                var holeCard: Option[Card],
-                                var roundEnded: Boolean,
-                              )
-
-  final case class Flow(
-                         requestContext: RequestContext,
-                         gameContext: GameContext,
-                         rng: Random,
+  case class GameConfig(
+                         id: String,
+                         actions: Map[RequestType, Props],
+                         responseAdapter: Props,
+                         behavior: Props,
                        )
+
+  case class RequestContext(
+                             requestId: Long,
+                             requestType: RequestType,
+                           )
+
+  case class PlayerContext(
+                            hand: ListBuffer[Card],
+                            value: Int,
+                          )
+
+  case class GameContext(
+                          dealer: PlayerContext,
+                          player: PlayerContext,
+                          var holeCard: Option[Card],
+                          var roundEnded: Boolean,
+                        )
+
+  case class Flow(
+                   requestContext: RequestContext,
+                   gameContext: GameContext,
+                   rng: Random,
+                 )
 
   object RequestType {
 

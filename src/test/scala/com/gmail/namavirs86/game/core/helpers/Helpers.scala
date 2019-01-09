@@ -14,8 +14,14 @@ object Helpers {
         requestId = 0,
         requestType = RequestType.DEAL),
       GameContext(
-        dealerHand = ListBuffer[Card](),
-        playerHand = ListBuffer[Card](),
+        dealer = PlayerContext(
+          hand = ListBuffer[Card](),
+          value = 0,
+        ),
+        player = PlayerContext(
+          hand = ListBuffer[Card](),
+          value = 0,
+        ),
         roundEnded = true,
         holeCard = None,
       ),
