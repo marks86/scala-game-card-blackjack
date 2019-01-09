@@ -12,12 +12,12 @@ object DealAction extends BaseActionMessages {
   def props(deckCount: Int): Props = Props(new DealAction(deckCount))
 }
 
-class DealAction(deckCount: Int) extends BaseAction {
+final class DealAction(deckCount: Int) extends BaseAction {
   val id = "dealAction"
 
   private val shoe = new Shoe(deckCount)
 
-  def process(flow: Flow) {
+  def process(flow: Flow): Unit = {
     val GameContext(dealerHand, playerHand, _) = flow.gameContext
     val rng = flow.rng
 

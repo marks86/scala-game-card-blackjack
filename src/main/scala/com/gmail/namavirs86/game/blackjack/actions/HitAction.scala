@@ -9,7 +9,7 @@ object HitAction extends BaseActionMessages {
   def props: Props = Props(new HitAction())
 }
 
-class HitAction extends BaseAction {
+final class HitAction extends BaseAction {
   val id = "hitAction"
 
   private val shoe = new Shoe(1)

@@ -14,7 +14,15 @@ trait BaseActionMessages {
 
 object BaseAction extends BaseActionMessages
 
-abstract class BaseAction extends Actor with ActorLogging {
+trait Action {
+  val id: String
+
+  def process(flow: Flow): Unit
+
+  def validateRequest(flow: Flow): Unit
+}
+
+abstract class BaseAction extends Actor with Action with ActorLogging {
   val id: String
 
   override def receive: Receive = {
@@ -25,8 +33,4 @@ abstract class BaseAction extends Actor with ActorLogging {
 
     case _ => println("that was unexpected")
   }
-
-  def process(flow: Flow): Unit
-
-  def validateRequest(flow: Flow): Unit
 }

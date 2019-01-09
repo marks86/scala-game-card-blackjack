@@ -21,6 +21,8 @@ abstract class Behavior extends Actor with ActorLogging {
     case RequestBehaviorProcess(playerRef: ActorRef, flow: Flow) ⇒
       process(flow)
       sender ! ResponseBehaviorProcess(playerRef, flow)
+
+    case _ => println("that was unexpected")
   }
 
   def process(flow: Flow): Unit
