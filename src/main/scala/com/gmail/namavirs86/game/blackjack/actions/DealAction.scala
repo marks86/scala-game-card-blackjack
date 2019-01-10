@@ -16,14 +16,17 @@ final class DealAction(deckCount: Int) extends BaseAction {
   private val shoe = new Shoe(deckCount)
 
   def process(flow: Flow): Unit = {
-    val dealerHand = flow.gameContext.dealer.hand
-    val playerHand = flow.gameContext.player.hand
+    val gameContext = flow.gameContext
+    val dealer = gameContext.dealer
+    val player = gameContext.player
     val rng = flow.rng
 
-    dealerHand += shoe.draw(rng)
-    playerHand += shoe.draw(rng)
-    flow.gameContext.holeCard = Some(shoe.draw(rng))
-    playerHand += shoe.draw(rng)
+    dealer.hand += shoe.draw(rng)
+    player.hand += shoe.draw(rng)
+    dealer.holeCard = Some(shoe.draw(rng))
+    player.hand += shoe.draw(rng)
+
+    gameContext.bet = flow.requestContext.bet
   }
 
   def validateRequest(flow: Flow): Unit = {}

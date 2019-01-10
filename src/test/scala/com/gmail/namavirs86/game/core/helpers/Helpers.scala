@@ -12,18 +12,24 @@ object Helpers {
     Flow(
       RequestContext(
         requestId = 0,
-        requestType = RequestType.DEAL),
+        requestType = RequestType.DEAL,
+        bet = 1f),
       GameContext(
-        dealer = PlayerContext(
+        dealer = DealerContext(
           hand = ListBuffer[Card](),
           value = 0,
+          holeCard = None,
+          hasBJ = false,
         ),
         player = PlayerContext(
           hand = ListBuffer[Card](),
           value = 0,
+          hasBJ = false,
         ),
+        bet = 0,
+        totalWin = 0f,
+        outcome = None,
         roundEnded = true,
-        holeCard = None,
       ),
       rng = new RandomCheating(cheat)
     )

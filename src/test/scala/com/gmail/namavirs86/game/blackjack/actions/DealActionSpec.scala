@@ -32,17 +32,12 @@ class DealActionSpec(_system: ActorSystem)
       action.tell(DealAction.RequestActionProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[DealAction.ResponseActionProcess]
-      val dealerHand = response.flow.gameContext.dealer.hand
-      val playerHand = response.flow.gameContext.player.hand
-      val holeCard = response.flow.gameContext.holeCard
+      val dealer = response.flow.gameContext.dealer
+      val player = response.flow.gameContext.player
 
-      println(dealerHand)
-      println(playerHand)
-      println(holeCard)
-
-      dealerHand shouldBe ListBuffer(Card(Rank.TWO,Suit.CLUBS))
-      playerHand shouldBe ListBuffer(Card(Rank.THREE, Suit.CLUBS), Card(Rank.FIVE, Suit.CLUBS))
-      holeCard shouldBe Some(Card(Rank.FOUR, Suit.CLUBS))
+      dealer.hand shouldBe ListBuffer(Card(Rank.TWO,Suit.CLUBS))
+      player.hand shouldBe ListBuffer(Card(Rank.THREE, Suit.CLUBS), Card(Rank.FIVE, Suit.CLUBS))
+      dealer.holeCard shouldBe Some(Card(Rank.FOUR, Suit.CLUBS))
     }
   }
 }

@@ -1,6 +1,7 @@
 package com.gmail.namavirs86.game.core
 
 import akka.actor.Props
+import com.gmail.namavirs86.game.core.Definitions.Outcome.Outcome
 import com.gmail.namavirs86.game.core.Definitions.Rank.Rank
 import com.gmail.namavirs86.game.core.Definitions.RequestType.RequestType
 import com.gmail.namavirs86.game.core.Definitions.Suit.Suit
@@ -21,17 +22,30 @@ object Definitions {
   case class RequestContext(
                              requestId: Long,
                              requestType: RequestType,
+                             bet: Float,
                            )
 
+  type Hand = ListBuffer[Card]
+
   case class PlayerContext(
-                            hand: ListBuffer[Card],
-                            value: Int,
+                            hand: Hand,
+                            var value: Int,
+                            var hasBJ: Boolean,
+                          )
+
+  case class DealerContext(
+                            hand: Hand,
+                            var value: Int,
+                            var holeCard: Option[Card],
+                            var hasBJ: Boolean,
                           )
 
   case class GameContext(
-                          dealer: PlayerContext,
+                          dealer: DealerContext,
                           player: PlayerContext,
-                          var holeCard: Option[Card],
+                          var outcome: Option[Outcome],
+                          var bet: Float,
+                          var totalWin: Float,
                           var roundEnded: Boolean,
                         )
 
@@ -40,6 +54,18 @@ object Definitions {
                    gameContext: GameContext,
                    rng: Random,
                  )
+
+  object Outcome {
+
+    sealed abstract class Outcome
+
+    case object DEALER extends Outcome
+
+    case object PLAYER extends Outcome
+
+    case object TIE extends Outcome
+
+  }
 
   object RequestType {
 
@@ -106,5 +132,7 @@ object Definitions {
   }
 
   case class Card(rank: Rank, suit: Suit)
+
+  type CardValues = Map[Rank, Int]
 
 }

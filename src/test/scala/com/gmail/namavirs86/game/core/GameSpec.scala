@@ -21,7 +21,7 @@ class GameSpec(_system: ActorSystem)
 
   val config = GameConfig(
     id = "bj",
-    actions = Map(RequestType.DEAL -> TestAction.props(1)),
+    actions = Map(RequestType.DEAL → TestAction.props(1)),
     responseAdapter = ResponseAdapter.props,
     behavior = TestBehavior.props
   )
