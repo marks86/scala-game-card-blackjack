@@ -36,13 +36,15 @@ class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
     val dealer = flow.gameContext.dealer
     val player = flow.gameContext.player
     val hasHoleCard = dealer.holeCard.nonEmpty
-    val hasBJ = dealer.hasBJ || player.hasBJ
 
     if (hasHoleCard) {
       dealer.hasBJ = isBlackjack(dealer.hand ++ dealer.holeCard)
     }
 
-    if (hasHoleCard && hasBJ) {
+    val hasBJ = dealer.hasBJ || player.hasBJ
+    val isPlayerBust = isBust(player.value)
+
+    if (hasHoleCard && (hasBJ || isPlayerBust)) {
       dealer.hand += dealer.holeCard.get
       dealer.holeCard = None
     }
@@ -72,10 +74,11 @@ class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
 
     val dealer = flow.gameContext.dealer
     val player = flow.gameContext.player
-
     val diff = player.value - dealer.value
 
     val outcome = diff match {
+      case _ if isBust(player.value) ⇒ Outcome.DEALER
+      case _ if isBust(dealer.value) ⇒ Outcome.PLAYER
       case x if x > 0 ⇒ Outcome.PLAYER
       case x if x < 0 ⇒ Outcome.DEALER
       case x if x == 0 ⇒ Outcome.TIE
@@ -108,7 +111,16 @@ class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
 
   private def calculateHandValue(hand: Hand): Int = {
     hand.foldLeft(0)((sum: Int, card: Card) ⇒ {
-      sum + settings.cardValues.getOrElse(card.rank, 0)
+      val value = settings.cardValues.getOrElse(card.rank, 0)
+      val isAce = card.rank.equals(Rank.ACE)
+      val isBust = this.isBust(sum + value)
+
+      val cardValue = if (isBust && isAce) 1 else value
+      sum + cardValue
     })
+  }
+
+  private def isBust(handValue: Int): Boolean = {
+    handValue > settings.bjValue
   }
 }

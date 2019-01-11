@@ -21,7 +21,7 @@ object Definitions {
 
   case class RequestContext(
                              requestId: Long,
-                             requestType: RequestType,
+                             var requestType: RequestType,
                              bet: Float,
                            )
 
