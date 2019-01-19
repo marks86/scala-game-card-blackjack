@@ -27,6 +27,8 @@ object Definitions {
 
   type Hand = ListBuffer[Card]
 
+  type Shoe = ListBuffer[Card]
+
   case class PlayerContext(
                             hand: Hand,
                             var value: Int,
@@ -54,6 +56,11 @@ object Definitions {
                    gameContext: GameContext,
                    rng: Random,
                  )
+
+  case class ShoeManagerSettings(
+                                  deckCount: Int,
+                                  cutCardPosition: Int,
+                                )
 
   object Outcome {
 
