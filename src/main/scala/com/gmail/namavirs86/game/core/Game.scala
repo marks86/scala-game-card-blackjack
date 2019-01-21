@@ -16,7 +16,8 @@ object Game {
   final case class ResponsePlay()
 
 }
-
+// @TODO: bet validation
+// @TODO: request validation in each action
 class Game(config: GameConfig) extends Actor with ActorLogging {
 
   private var actions = Map.empty[RequestType, ActorRef]

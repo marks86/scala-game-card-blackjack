@@ -15,9 +15,9 @@ object Definitions {
 
   case class StandActionSettings(
                                 shoeSettings: ShoeManagerSettings,
+                                cardValues: CardValues,
                                 dealerStandValue: Int,
                                 dealerSoftValue: Int,
-                                cardValues: CardValues,
                                 bjValue: Int,
                                 )
 }

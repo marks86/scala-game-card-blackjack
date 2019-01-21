@@ -16,9 +16,9 @@ final class StandAction(settings: StandActionSettings) extends BaseAction {
 
   private val StandActionSettings(
   shoeSettings,
+  cardValues,
   dealerStandValue,
   dealerSoftValue,
-  cardValues,
   bjValue,
   ) = settings
 
