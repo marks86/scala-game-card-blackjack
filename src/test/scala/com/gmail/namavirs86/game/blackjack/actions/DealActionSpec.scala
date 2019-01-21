@@ -22,7 +22,7 @@ class DealActionSpec(_system: ActorSystem)
     shutdown(system)
   }
 
-  "A Deal action" should {
+  "Deal action" should {
     "draw the cards" in {
       val probe = TestProbe()
       val settings = ShoeManagerSettings(

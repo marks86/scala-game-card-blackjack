@@ -36,7 +36,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
     shutdown(system)
   }
 
-  "A Blackjack Behavior" should {
+  "Blackjack Behavior" should {
     "calculate player and dealer hand values" in {
       val flow = Helpers.createFlow()
       flow.gameContext.player.hand += (Card(Rank.TWO, Suit.CLUBS), Card(Rank.THREE, Suit.CLUBS))

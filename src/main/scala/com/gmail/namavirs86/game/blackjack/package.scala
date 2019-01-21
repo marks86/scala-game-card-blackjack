@@ -5,7 +5,7 @@ import com.gmail.namavirs86.game.core.Game
 
 package object blackjack {
 
-  val cardValue: CardValues = Map(
+  val cardValues: CardValues = Map(
     Rank.TWO → 2,
     Rank.THREE → 3,
     Rank.FOUR → 4,

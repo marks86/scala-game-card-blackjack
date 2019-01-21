@@ -1,8 +1,13 @@
 package com.gmail.namavirs86.game.blackjack.actions
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{TestKit, TestProbe}
+import com.gmail.namavirs86.game.blackjack.Definitions.StandActionSettings
+import com.gmail.namavirs86.game.core.Definitions._
+import com.gmail.namavirs86.game.core.helpers.Helpers
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
+
+import scala.collection.mutable.ListBuffer
 
 class StandActionSpec(_system: ActorSystem)
   extends TestKit(_system)
@@ -17,10 +22,81 @@ class StandActionSpec(_system: ActorSystem)
     shutdown(system)
   }
 
-  "A Stand action" should {
-    "process" in {
-      val probe = TestProbe()
+  val probe = TestProbe()
+  val settings = StandActionSettings(
+    shoeSettings = ShoeManagerSettings(
+      deckCount = 1,
+      cutCardPosition = 52,
+    ),
+    cardValues = Helpers.cardValues,
+    dealerStandValue = 17,
+    dealerSoftValue = 17,
+    bjValue = 21,
+  )
+  val action: ActorRef = system.actorOf(StandAction.props(settings))
 
+  "Stand action" should {
+    "draw additional card and stand on 17" in {
+      val flow = Helpers.createFlow()
+      flow.gameContext.shoe = List(
+        Card(Rank.ACE, Suit.CLUBS),
+      )
+      flow.gameContext.dealer.hand += Card(Rank.TEN, Suit.CLUBS)
+      flow.gameContext.dealer.holeCard = Some(Card(Rank.SIX, Suit.CLUBS))
+
+      action.tell(StandAction.RequestActionProcess(probe.ref, flow), probe.ref)
+
+      val response = probe.expectMsgType[HitAction.ResponseActionProcess]
+      val dealer = response.flow.gameContext.dealer
+
+      dealer shouldBe DealerContext(
+        hand = ListBuffer(Card(Rank.TEN, Suit.CLUBS), Card(Rank.SIX, Suit.CLUBS), Card(Rank.ACE, Suit.CLUBS)),
+        value = 17,
+        holeCard = None,
+        hasBJ = false,
+      )
+    }
+
+    "draw additional card on soft hand" in {
+      val flow = Helpers.createFlow()
+      flow.gameContext.shoe = List(
+        Card(Rank.ACE, Suit.CLUBS),
+      )
+      flow.gameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
+      flow.gameContext.dealer.holeCard = Some(Card(Rank.SIX, Suit.CLUBS))
+
+      action.tell(StandAction.RequestActionProcess(probe.ref, flow), probe.ref)
+
+      val response = probe.expectMsgType[HitAction.ResponseActionProcess]
+      val dealer = response.flow.gameContext.dealer
+
+      dealer shouldBe DealerContext(
+        hand = ListBuffer(Card(Rank.ACE, Suit.CLUBS), Card(Rank.SIX, Suit.CLUBS), Card(Rank.ACE, Suit.CLUBS)),
+        value = 18,
+        holeCard = None,
+        hasBJ = false,
+      )
+    }
+
+    "not draw additional card" in {
+      val flow = Helpers.createFlow()
+      flow.gameContext.shoe = List(
+        Card(Rank.ACE, Suit.CLUBS),
+      )
+      flow.gameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
+      flow.gameContext.dealer.holeCard = Some(Card(Rank.SEVEN, Suit.CLUBS))
+
+      action.tell(StandAction.RequestActionProcess(probe.ref, flow), probe.ref)
+
+      val response = probe.expectMsgType[HitAction.ResponseActionProcess]
+      val dealer = response.flow.gameContext.dealer
+
+      dealer shouldBe DealerContext(
+        hand = ListBuffer(Card(Rank.ACE, Suit.CLUBS), Card(Rank.SEVEN, Suit.CLUBS)),
+        value = 18,
+        holeCard = None,
+        hasBJ = false,
+      )
     }
   }
 }

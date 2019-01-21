@@ -12,7 +12,7 @@ class ShoeManagerSpec extends WordSpecLike with Matchers {
 
   val shoeManager = new ShoeManager(Helpers.shoeManagerSettings)
 
-  "A Shoe Manager" should {
+  "Shoe Manager" should {
     "draw a card" in {
       val rng = new Random()
       val shoe = List(

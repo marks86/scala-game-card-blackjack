@@ -21,7 +21,7 @@ class HitActionSpec(_system: ActorSystem)
     shutdown(system)
   }
 
-  "A Hit action" should {
+  "Hit action" should {
     "draw a new card for player" in {
       val probe = TestProbe()
       val action = system.actorOf(HitAction.props(Helpers.shoeManagerSettings))

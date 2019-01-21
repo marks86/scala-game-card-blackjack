@@ -2,6 +2,7 @@ package com.gmail.namavirs86.game.blackjack
 
 import akka.actor.Props
 import com.gmail.namavirs86.game.blackjack.Definitions.BehaviorSettings
+import com.gmail.namavirs86.game.blackjack.utils.CardUtils
 import com.gmail.namavirs86.game.core.{Behavior, BehaviorMessages}
 import com.gmail.namavirs86.game.core.Definitions._
 
@@ -9,8 +10,10 @@ object BlackjackBehavior extends BehaviorMessages {
   def props(settings: BehaviorSettings): Props = Props(new BlackjackBehavior(settings))
 }
 
-class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
+final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
   val id = "blackjackBehavior"
+
+  private val cardUtils = new CardUtils()
 
   def process(flow: Flow): Unit = {
 
@@ -26,9 +29,11 @@ class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
   }
 
   private def updatePlayerContext(flow: Flow): Unit = {
+    val cardValues = settings.cardValues
+    val bjValue = settings.bjValue
     val player = flow.gameContext.player
 
-    player.value = calculateHandValue(player.hand)
+    player.value = cardUtils.calculateHandValue(player.hand, cardValues, bjValue)
     player.hasBJ = isBlackjack(player.hand)
   }
 
@@ -41,15 +46,17 @@ class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
       dealer.hasBJ = isBlackjack(dealer.hand ++ dealer.holeCard)
     }
 
+    val bjValue = settings.bjValue
     val hasBJ = dealer.hasBJ || player.hasBJ
-    val isPlayerBust = isBust(player.value)
+    val isPlayerBust = cardUtils.isBust(player.value, bjValue)
 
     if (hasHoleCard && (hasBJ || isPlayerBust)) {
       dealer.hand += dealer.holeCard.get
       dealer.holeCard = None
     }
 
-    dealer.value = calculateHandValue(dealer.hand)
+    val cardValues = settings.cardValues
+    dealer.value = cardUtils.calculateHandValue(dealer.hand, cardValues, bjValue)
   }
 
   private def updateRoundEnded(flow: Flow): Unit = {
@@ -57,9 +64,10 @@ class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
     val gameContext = flow.gameContext
     val dealer = gameContext.dealer
     val player = gameContext.player
+    val bjValue = settings.bjValue
 
     gameContext.roundEnded = isStand ||
-      player.value > settings.bjValue ||
+      cardUtils.isBust(player.value, bjValue) ||
       dealer.value >= settings.dealerStandValue ||
       dealer.hasBJ ||
       player.hasBJ
@@ -72,13 +80,14 @@ class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
       return
     }
 
+    val bjValue = settings.bjValue
     val dealer = flow.gameContext.dealer
     val player = flow.gameContext.player
     val diff = player.value - dealer.value
 
     val outcome = diff match {
-      case _ if isBust(player.value) ⇒ Outcome.DEALER
-      case _ if isBust(dealer.value) ⇒ Outcome.PLAYER
+      case _ if cardUtils.isBust(player.value, bjValue) ⇒ Outcome.DEALER
+      case _ if cardUtils.isBust(dealer.value, bjValue) ⇒ Outcome.PLAYER
       case x if x > 0 ⇒ Outcome.PLAYER
       case x if x < 0 ⇒ Outcome.DEALER
       case x if x == 0 ⇒ Outcome.TIE
@@ -104,23 +113,11 @@ class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
   }
 
   private def isBlackjack(hand: Hand): Boolean = {
+    val cardValues = settings.cardValues
+    val bjValue = settings.bjValue
+
     // takes first two cards
     val h = hand.slice(0, 2)
-    calculateHandValue(h) == settings.bjValue
-  }
-
-  private def calculateHandValue(hand: Hand): Int = {
-    hand.foldLeft(0)((sum: Int, card: Card) ⇒ {
-      val value = settings.cardValues.getOrElse(card.rank, 0)
-      val isAce = card.rank.equals(Rank.ACE)
-      val isBust = this.isBust(sum + value)
-
-      val cardValue = if (isBust && isAce) 1 else value
-      sum + cardValue
-    })
-  }
-
-  private def isBust(handValue: Int): Boolean = {
-    handValue > settings.bjValue
+    cardUtils.calculateHandValue(h, cardValues, bjValue) == settings.bjValue
   }
 }
