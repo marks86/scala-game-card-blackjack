@@ -1,18 +1,18 @@
 package com.gmail.namavirs86.game.blackjack.actions
 
 import akka.actor.Props
-import com.gmail.namavirs86.game.core.Definitions.Flow
-import com.gmail.namavirs86.game.core.Shoe
+import com.gmail.namavirs86.game.core.Definitions.{Flow, ShoeManagerSettings}
+import com.gmail.namavirs86.game.core.ShoeManager
 import com.gmail.namavirs86.game.core.actions.{BaseAction, BaseActionMessages}
 
 object StandAction extends BaseActionMessages {
-  def props: Props = Props(new StandAction())
+  def props(shoeSettings: ShoeManagerSettings): Props = Props(new StandAction(shoeSettings))
 }
 
-final class StandAction extends BaseAction {
+final class StandAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
   val id = "standAction"
 
-  private val shoe = new Shoe(1)
+  private val shoeManager = new ShoeManager(shoeSettings)
 
   def process(flow: Flow): Unit = {
 

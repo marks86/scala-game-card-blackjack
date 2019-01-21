@@ -27,7 +27,7 @@ object Definitions {
 
   type Hand = ListBuffer[Card]
 
-  type Shoe = ListBuffer[Card]
+  type Shoe = List[Card]
 
   case class PlayerContext(
                             hand: Hand,
@@ -45,6 +45,7 @@ object Definitions {
   case class GameContext(
                           dealer: DealerContext,
                           player: PlayerContext,
+                          var shoe: List[Card],
                           var outcome: Option[Outcome],
                           var bet: Float,
                           var totalWin: Float,

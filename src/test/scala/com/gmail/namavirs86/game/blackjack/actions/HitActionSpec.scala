@@ -2,7 +2,7 @@ package com.gmail.namavirs86.game.blackjack.actions
 
 import akka.actor.ActorSystem
 import akka.testkit.{TestKit, TestProbe}
-import com.gmail.namavirs86.game.core.Definitions.{Card, Rank, Suit}
+import com.gmail.namavirs86.game.core.Definitions.{Card, Rank, ShoeManagerSettings, Suit}
 import com.gmail.namavirs86.game.core.helpers.Helpers
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
 
@@ -24,9 +24,11 @@ class HitActionSpec(_system: ActorSystem)
   "A Hit action" should {
     "draw a new card for player" in {
       val probe = TestProbe()
-      val action = system.actorOf(HitAction.props)
-      val cheat = ListBuffer[Int](0)
-      val flow = Helpers.createFlow(cheat)
+      val action = system.actorOf(HitAction.props(Helpers.shoeManagerSettings))
+      val flow = Helpers.createFlow()
+      flow.gameContext.shoe = List(
+        Card(Rank.TWO, Suit.CLUBS)
+      )
 
       action.tell(HitAction.RequestActionProcess(probe.ref, flow), probe.ref)
 
@@ -35,7 +37,7 @@ class HitActionSpec(_system: ActorSystem)
       val playerHand = response.flow.gameContext.player.hand
 
       dealerHand shouldBe ListBuffer()
-      playerHand shouldBe ListBuffer(Card(Rank.TWO,Suit.CLUBS))
+      playerHand shouldBe ListBuffer(Card(Rank.TWO, Suit.CLUBS))
     }
   }
 

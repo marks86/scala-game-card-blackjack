@@ -25,6 +25,7 @@ object Helpers {
           value = 0,
           hasBJ = false,
         ),
+        shoe = List(),
         bet = 0,
         totalWin = 0f,
         outcome = None,
@@ -48,6 +49,11 @@ object Helpers {
     Rank.QUEEN → 10,
     Rank.KING → 10,
     Rank.ACE → 11
+  )
+
+  val shoeManagerSettings = ShoeManagerSettings(
+    deckCount = 1,
+    cutCardPosition = 40
   )
 
 }

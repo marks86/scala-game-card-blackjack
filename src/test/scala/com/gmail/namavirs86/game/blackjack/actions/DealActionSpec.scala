@@ -25,9 +25,18 @@ class DealActionSpec(_system: ActorSystem)
   "A Deal action" should {
     "draw the cards" in {
       val probe = TestProbe()
-      val action = system.actorOf(DealAction.props(1))
-      val cheat = ListBuffer[Int](0, 1, 2, 3)
-      val flow = Helpers.createFlow(cheat)
+      val settings = ShoeManagerSettings(
+        deckCount = 1,
+        cutCardPosition = 52,
+      )
+      val action = system.actorOf(DealAction.props(settings))
+      val flow = Helpers.createFlow()
+      flow.gameContext.shoe = List(
+        Card(Rank.TWO, Suit.CLUBS),
+        Card(Rank.THREE, Suit.CLUBS),
+        Card(Rank.FOUR, Suit.CLUBS),
+        Card(Rank.FIVE, Suit.CLUBS),
+      )
 
       action.tell(DealAction.RequestActionProcess(probe.ref, flow), probe.ref)
 
@@ -35,7 +44,7 @@ class DealActionSpec(_system: ActorSystem)
       val dealer = response.flow.gameContext.dealer
       val player = response.flow.gameContext.player
 
-      dealer.hand shouldBe ListBuffer(Card(Rank.TWO,Suit.CLUBS))
+      dealer.hand shouldBe ListBuffer(Card(Rank.TWO, Suit.CLUBS))
       player.hand shouldBe ListBuffer(Card(Rank.THREE, Suit.CLUBS), Card(Rank.FIVE, Suit.CLUBS))
       dealer.holeCard shouldBe Some(Card(Rank.FOUR, Suit.CLUBS))
     }

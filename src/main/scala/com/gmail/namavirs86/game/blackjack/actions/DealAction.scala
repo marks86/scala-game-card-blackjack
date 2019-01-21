@@ -21,24 +21,22 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
     val gameContext = flow.gameContext
     val dealer = gameContext.dealer
     val player = gameContext.player
-    val shoe = gameContext.shoe
-    val rng = flow.rng
 
-    dealer.hand += shoeManager.draw(rng)
-    player.hand += shoeManager.draw(rng)
-    dealer.holeCard = Some(shoeManager.draw(rng))
-    player.hand += shoeManager.draw(rng)
+    dealer.hand += drawCard(flow, isNewRound = true)
+    player.hand += drawCard(flow)
+    dealer.holeCard = Some(drawCard(flow))
+    player.hand += drawCard(flow)
 
     gameContext.bet = flow.requestContext.bet
   }
 
-  def draw(flow: Flow, isNewRound: Boolean): Card = {
+  def validateRequest(flow: Flow): Unit = {}
+
+  private def drawCard(flow: Flow, isNewRound: Boolean = false): Card = {
     val rng = flow.rng
     val gameContext = flow.gameContext
     val (card, shoe) = shoeManager.draw(rng, gameContext.shoe, isNewRound)
     gameContext.shoe = shoe
     card
   }
-
-  def validateRequest(flow: Flow): Unit = {}
 }

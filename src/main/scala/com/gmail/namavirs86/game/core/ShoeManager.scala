@@ -7,21 +7,14 @@ import scala.util.Random
 
 class ShoeManager(settings: ShoeManagerSettings) {
 
-  def draw(rng: Random, shoe: Shoe, isNewRound: Boolean): (Card, Shoe) = {
-    val resultShoe =
-      if (isNewRound && checkReShuffle(shoe)) shuffle(rng) else shoe
+  def draw(rng: Random, shoe: Shoe, isNewRound: Boolean = false): (Card, Shoe) = {
+    val cards =
+      if (isNewRound && checkForReShuffle(shoe)) shuffle(rng) else shoe
 
-    val (card, _) = draw(rng, resultShoe)
-
-    (card, resultShoe)
+    (cards.head, cards.tail)
   }
 
-  def draw(rng: Random, shoe: Shoe): (Card, Shoe) = {
-    val card = shoe.remove(0)
-    (card, shoe)
-  }
-
-  private def checkReShuffle(shoe: Shoe): Boolean = {
+  private def checkForReShuffle(shoe: Shoe): Boolean = {
     val shoeMaxLen = Rank.ranks.length * Suit.suits.length * settings.deckCount
     shoeMaxLen - shoe.length >= settings.cutCardPosition
   }
@@ -34,6 +27,6 @@ class ShoeManager(settings: ShoeManagerSettings) {
     )
       yield Card(r, s)
 
-    rng.shuffle(shoe).to[ListBuffer]
+    rng.shuffle(shoe)
   }
 }
