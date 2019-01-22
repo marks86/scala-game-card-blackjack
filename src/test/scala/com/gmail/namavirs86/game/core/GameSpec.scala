@@ -3,8 +3,8 @@ package com.gmail.namavirs86.game.core
 import akka.actor.ActorSystem
 import akka.testkit.{TestKit, TestProbe}
 import com.gmail.namavirs86.game.core.Definitions._
-import com.gmail.namavirs86.game.core.adapters.ResponseAdapter
-import com.gmail.namavirs86.game.core.helpers.{Helpers, TestAction, TestBehavior}
+import com.gmail.namavirs86.game.core.adapters.BaseResponseAdapter
+import com.gmail.namavirs86.game.core.helpers.{Helpers, TestAction, TestBehavior, TestResponseAdapter}
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
 
 import scala.collection.mutable.ListBuffer
@@ -22,7 +22,7 @@ class GameSpec(_system: ActorSystem)
   val config = GameConfig(
     id = "bj",
     actions = Map(RequestType.DEAL → TestAction.props(1)),
-    responseAdapter = ResponseAdapter.props,
+    responseAdapter = TestResponseAdapter.props,
     behavior = TestBehavior.props
   )
 

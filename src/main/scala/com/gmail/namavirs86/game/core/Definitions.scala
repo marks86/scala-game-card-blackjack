@@ -29,6 +29,8 @@ object Definitions {
 
   type Shoe = List[Card]
 
+  case class GamePlayResponse()
+
   case class PlayerContext(
                             hand: Hand,
                             var value: Int,
@@ -55,6 +57,7 @@ object Definitions {
   case class Flow(
                    requestContext: RequestContext,
                    gameContext: GameContext,
+                   var response: Option[GamePlayResponse],
                    rng: Random,
                  )
 

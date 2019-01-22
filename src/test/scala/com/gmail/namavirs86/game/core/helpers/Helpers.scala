@@ -31,6 +31,7 @@ object Helpers {
         outcome = None,
         roundEnded = true,
       ),
+      response = None,
       rng = new RandomCheating(cheat)
     )
   }

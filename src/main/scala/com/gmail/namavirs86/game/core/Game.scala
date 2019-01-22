@@ -1,19 +1,18 @@
 package com.gmail.namavirs86.game.core
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-
-import Game.RequestPlay
+import Game.{RequestPlay, ResponsePlay}
 import actions.BaseAction.{RequestActionProcess, ResponseActionProcess}
-import adapters.ResponseAdapter.{RequestCreateResponse, ResponseCreateResponse}
+import adapters.BaseResponseAdapter.{RequestCreateResponse, ResponseCreateResponse}
 import Definitions.RequestType.RequestType
-import Definitions.{Flow, GameConfig}
+import Definitions.{Flow, GameConfig, GamePlayResponse}
 
 object Game {
   def props(config: GameConfig): Props = Props(new Game(config))
 
-  final case class RequestPlay(context: Flow)
+  final case class RequestPlay(flow: Flow)
 
-  final case class ResponsePlay()
+  final case class ResponsePlay(flow: Flow)
 
 }
 // @TODO: bet validation
@@ -45,8 +44,8 @@ class Game(config: GameConfig) extends Actor with ActorLogging {
     case ResponseActionProcess(playerRef: ActorRef, flow: Flow) ⇒
       responseActionProcess(playerRef, flow)
 
-    case ResponseCreateResponse(playerRef: ActorRef) ⇒
-      responseCreateResponse(playerRef)
+    case ResponseCreateResponse(playerRef: ActorRef, flow: Flow) ⇒
+      responseCreateResponse(playerRef, flow)
   }
 
   private def requestPlay(flow: Flow): Unit = {
@@ -64,8 +63,9 @@ class Game(config: GameConfig) extends Actor with ActorLogging {
     log.info("Received ResponseActionProcess")
   }
 
-  private def responseCreateResponse(playerRef: ActorRef): Unit = {
-    log.info("Response created")
+  private def responseCreateResponse(playerRef: ActorRef, flow: Flow): Unit = {
+    playerRef ! ResponsePlay(flow)
+    log.info("Response sent")
   }
 }
 
