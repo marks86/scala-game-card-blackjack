@@ -1,12 +1,9 @@
 package com.gmail.namavirs86.game.blackjack.actions
 
 import akka.actor.Props
-import com.gmail.namavirs86.game.core.Definitions.{Card, Flow, GameContext, ShoeManagerSettings}
-import com.gmail.namavirs86.game.core.ShoeManager
-import com.gmail.namavirs86.game.core.actions.BaseAction
-import com.gmail.namavirs86.game.core.actions.BaseActionMessages
-
-import scala.util.Random
+import com.gmail.namavirs86.game.card.core.ShoeManager
+import com.gmail.namavirs86.game.card.core.actions.{BaseAction, BaseActionMessages}
+import com.gmail.namavirs86.game.card.core.Definitions.{Card, Flow, ShoeManagerSettings}
 
 object DealAction extends BaseActionMessages {
   def props(shoeSettings: ShoeManagerSettings): Props = Props(new DealAction(shoeSettings))

@@ -3,8 +3,8 @@ package com.gmail.namavirs86.game.blackjack.actions
 import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{TestKit, TestProbe}
 import com.gmail.namavirs86.game.blackjack.Definitions.StandActionSettings
-import com.gmail.namavirs86.game.core.Definitions._
-import com.gmail.namavirs86.game.core.helpers.Helpers
+import com.gmail.namavirs86.game.card.core.helpers.Helpers
+import com.gmail.namavirs86.game.card.core.Definitions._
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
 
 import scala.collection.mutable.ListBuffer

@@ -1,15 +1,12 @@
 package com.gmail.namavirs86.game.blackjack
 
+import scala.collection.mutable.ListBuffer
 import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{TestKit, TestProbe}
-import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike, FlatSpec}
-import pprint._
+import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
 import com.gmail.namavirs86.game.blackjack.Definitions.BehaviorSettings
-import com.gmail.namavirs86.game.core.Definitions._
-import com.gmail.namavirs86.game.core.helpers.Helpers
-
-import scala.collection.mutable.ListBuffer
-
+import com.gmail.namavirs86.game.card.core.helpers.Helpers
+import com.gmail.namavirs86.game.card.core.Definitions._
 
 class BlackjackBehaviorSpec(_system: ActorSystem)
   extends TestKit(_system)

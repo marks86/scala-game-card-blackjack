@@ -1,11 +1,11 @@
 package com.gmail.namavirs86.game.blackjack.actions
 
 import akka.actor.Props
-import com.gmail.namavirs86.game.core.Definitions._
-import com.gmail.namavirs86.game.core.ShoeManager
-import com.gmail.namavirs86.game.core.actions.{BaseAction, BaseActionMessages}
+import com.gmail.namavirs86.game.card.core.Definitions._
 import com.gmail.namavirs86.game.blackjack.Definitions.StandActionSettings
 import com.gmail.namavirs86.game.blackjack.utils.CardUtils
+import com.gmail.namavirs86.game.card.core.ShoeManager
+import com.gmail.namavirs86.game.card.core.actions.{BaseAction, BaseActionMessages}
 
 object StandAction extends BaseActionMessages {
   def props(settings: StandActionSettings): Props = Props(new StandAction(settings))

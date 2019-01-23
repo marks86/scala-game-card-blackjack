@@ -3,8 +3,8 @@ package com.gmail.namavirs86.game.blackjack
 import akka.actor.Props
 import com.gmail.namavirs86.game.blackjack.Definitions.BehaviorSettings
 import com.gmail.namavirs86.game.blackjack.utils.CardUtils
-import com.gmail.namavirs86.game.core.{Behavior, BehaviorMessages}
-import com.gmail.namavirs86.game.core.Definitions._
+import com.gmail.namavirs86.game.card.core.{Behavior, BehaviorMessages}
+import com.gmail.namavirs86.game.card.core.Definitions._
 
 object BlackjackBehavior extends BehaviorMessages {
   def props(settings: BehaviorSettings): Props = Props(new BlackjackBehavior(settings))

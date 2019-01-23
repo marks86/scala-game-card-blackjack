@@ -1,8 +1,8 @@
 package com.gmail.namavirs86.game.blackjack.adapters
 
 import akka.actor.Props
-import com.gmail.namavirs86.game.core.Definitions.{Flow, GamePlayResponse}
-import com.gmail.namavirs86.game.core.adapters.{BaseResponseAdapter, BaseResponseAdapterMessages}
+import com.gmail.namavirs86.game.card.core.Definitions.{Flow, GamePlayResponse}
+import com.gmail.namavirs86.game.card.core.adapters.{BaseResponseAdapter, BaseResponseAdapterMessages}
 
 object ResponseAdapter extends BaseResponseAdapterMessages {
   def props: Props = Props(new ResponseAdapter())

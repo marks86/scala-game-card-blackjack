@@ -1,6 +1,6 @@
 package com.gmail.namavirs86.game.blackjack
 
-import com.gmail.namavirs86.game.core.Definitions.{CardValues, ShoeManagerSettings}
+import com.gmail.namavirs86.game.card.core.Definitions.{CardValues, ShoeManagerSettings}
 
 object Definitions {
 
