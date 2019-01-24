@@ -60,7 +60,7 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
   }
 
   private def updateRoundEnded(flow: Flow): Unit = {
-    val isStand = flow.requestContext.requestType == ActionType.STAND
+    val isStand = flow.requestContext.action == ActionType.STAND
     val gameContext = flow.gameContext
     val dealer = gameContext.dealer
     val player = gameContext.player

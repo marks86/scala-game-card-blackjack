@@ -132,7 +132,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
     "determine round outcome as TIE" in {
       val flow = Helpers.createFlow()
 
-      flow.requestContext.requestType = ActionType.STAND
+      flow.requestContext.action = ActionType.STAND
       flow.gameContext.bet = 5
       flow.gameContext.player.hand += (
         Card(Rank.EIGHT, Suit.CLUBS),
@@ -205,7 +205,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
     "determine round outcome as PLAYER win" in {
       val flow = Helpers.createFlow()
 
-      flow.requestContext.requestType = ActionType.STAND
+      flow.requestContext.action = ActionType.STAND
       flow.gameContext.bet = 5
       flow.gameContext.player.hand += (
         Card(Rank.NINE, Suit.CLUBS),
@@ -243,7 +243,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
     "end round because dealer goes bust" in {
       val flow = Helpers.createFlow()
 
-      flow.requestContext.requestType = ActionType.STAND
+      flow.requestContext.action = ActionType.STAND
       flow.gameContext.bet = 5
       flow.gameContext.player.hand += (
         Card(Rank.NINE, Suit.CLUBS),
@@ -282,7 +282,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
     "end round because player goes bust" in {
       val flow = Helpers.createFlow()
 
-      flow.requestContext.requestType = ActionType.HIT
+      flow.requestContext.action = ActionType.HIT
       flow.gameContext.bet = 5
       flow.gameContext.player.hand += (
         Card(Rank.NINE, Suit.CLUBS),
