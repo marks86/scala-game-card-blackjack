@@ -1,6 +1,6 @@
 package com.gmail.namavirs86.game.blackjack
 
-import com.gmail.namavirs86.game.card.core.Definitions.{CardValues, ShoeManagerSettings}
+import com.gmail.namavirs86.game.card.core.Definitions.{ActionType, CardValues, ShoeManagerSettings}
 
 object Definitions {
 
@@ -14,10 +14,20 @@ object Definitions {
                              )
 
   case class StandActionSettings(
-                                shoeSettings: ShoeManagerSettings,
-                                cardValues: CardValues,
-                                dealerStandValue: Int,
-                                dealerSoftValue: Int,
-                                bjValue: Int,
+                                  shoeSettings: ShoeManagerSettings,
+                                  cardValues: CardValues,
+                                  dealerStandValue: Int,
+                                  dealerSoftValue: Int,
+                                  bjValue: Int,
                                 )
+
+  object BlackjackActionType {
+
+    val DEAL: ActionType = "DEAL"
+
+    val HIT: ActionType = "HIT"
+
+    val STAND: ActionType = "STAND"
+  }
+
 }

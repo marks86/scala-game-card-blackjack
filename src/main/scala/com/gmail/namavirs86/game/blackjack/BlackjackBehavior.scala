@@ -1,7 +1,7 @@
 package com.gmail.namavirs86.game.blackjack
 
 import akka.actor.Props
-import com.gmail.namavirs86.game.blackjack.Definitions.BehaviorSettings
+import com.gmail.namavirs86.game.blackjack.Definitions.{BehaviorSettings, BlackjackActionType}
 import com.gmail.namavirs86.game.blackjack.utils.CardUtils
 import com.gmail.namavirs86.game.card.core.{Behavior, BehaviorMessages}
 import com.gmail.namavirs86.game.card.core.Definitions._
@@ -60,7 +60,7 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
   }
 
   private def updateRoundEnded(flow: Flow): Unit = {
-    val isStand = flow.requestContext.action == ActionType.STAND
+    val isStand = flow.requestContext.action == BlackjackActionType.STAND
     val gameContext = flow.gameContext
     val dealer = gameContext.dealer
     val player = gameContext.player

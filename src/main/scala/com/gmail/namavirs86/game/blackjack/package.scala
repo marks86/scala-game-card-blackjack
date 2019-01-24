@@ -1,6 +1,6 @@
 package com.gmail.namavirs86.game
 
-import com.gmail.namavirs86.game.blackjack.Definitions.{BehaviorSettings, StandActionSettings}
+import com.gmail.namavirs86.game.blackjack.Definitions.{BehaviorSettings, BlackjackActionType, StandActionSettings}
 import com.gmail.namavirs86.game.blackjack.actions.{DealAction, HitAction, StandAction}
 import com.gmail.namavirs86.game.blackjack.adapters.ResponseAdapter
 import com.gmail.namavirs86.game.card.core.Definitions._
@@ -31,13 +31,13 @@ package object blackjack {
   val config = GameConfig(
     id = "bj",
     actions = Map(
-      ActionType.DEAL → DealAction.props(
+      BlackjackActionType.DEAL → DealAction.props(
         shoeManagerSettings
       ),
-      ActionType.HIT → HitAction.props(
+      BlackjackActionType.HIT → HitAction.props(
         shoeManagerSettings
       ),
-      ActionType.STAND → StandAction.props(
+      BlackjackActionType.STAND → StandAction.props(
         StandActionSettings(
           shoeManagerSettings,
           cardValues,

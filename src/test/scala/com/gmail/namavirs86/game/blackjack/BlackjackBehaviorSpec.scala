@@ -4,7 +4,7 @@ import scala.collection.mutable.ListBuffer
 import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{TestKit, TestProbe}
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
-import com.gmail.namavirs86.game.blackjack.Definitions.BehaviorSettings
+import com.gmail.namavirs86.game.blackjack.Definitions.{BehaviorSettings, BlackjackActionType}
 import com.gmail.namavirs86.game.card.core.helpers.Helpers
 import com.gmail.namavirs86.game.card.core.Definitions._
 
@@ -132,7 +132,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
     "determine round outcome as TIE" in {
       val flow = Helpers.createFlow()
 
-      flow.requestContext.action = ActionType.STAND
+      flow.requestContext.action = BlackjackActionType.STAND
       flow.gameContext.bet = Some(5)
       flow.gameContext.player.hand += (
         Card(Rank.EIGHT, Suit.CLUBS),
@@ -205,7 +205,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
     "determine round outcome as PLAYER win" in {
       val flow = Helpers.createFlow()
 
-      flow.requestContext.action = ActionType.STAND
+      flow.requestContext.action = BlackjackActionType.STAND
       flow.gameContext.bet = Some(5)
       flow.gameContext.player.hand += (
         Card(Rank.NINE, Suit.CLUBS),
@@ -243,7 +243,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
     "end round because dealer goes bust" in {
       val flow = Helpers.createFlow()
 
-      flow.requestContext.action = ActionType.STAND
+      flow.requestContext.action = BlackjackActionType.STAND
       flow.gameContext.bet = Some(5)
       flow.gameContext.player.hand += (
         Card(Rank.NINE, Suit.CLUBS),
@@ -282,7 +282,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
     "end round because player goes bust" in {
       val flow = Helpers.createFlow()
 
-      flow.requestContext.action = ActionType.HIT
+      flow.requestContext.action = BlackjackActionType.HIT
       flow.gameContext.bet = Some(5)
       flow.gameContext.player.hand += (
         Card(Rank.NINE, Suit.CLUBS),
