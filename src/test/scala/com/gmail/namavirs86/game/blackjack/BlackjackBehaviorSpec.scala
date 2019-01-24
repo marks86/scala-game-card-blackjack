@@ -53,7 +53,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
     "reveal hole card because of dealers BJ" in {
       val flow = Helpers.createFlow()
 
-      flow.gameContext.bet = 5
+      flow.gameContext.bet = Some(5f)
       flow.gameContext.player.hand += (Card(Rank.TWO, Suit.CLUBS), Card(Rank.THREE, Suit.CLUBS))
       flow.gameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
       flow.gameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
@@ -70,14 +70,14 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
         hasBJ = true)
 
       gameContext.outcome shouldBe Some(Outcome.DEALER)
-      gameContext.bet shouldBe 5
+      gameContext.bet shouldBe Some(5)
       gameContext.roundEnded shouldBe true
     }
 
     "reveal hole card because of players BJ" in {
       val flow = Helpers.createFlow()
 
-      flow.gameContext.bet = 5
+      flow.gameContext.bet = Some(5)
       flow.gameContext.player.hand += (Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS))
       flow.gameContext.dealer.hand += Card(Rank.TWO, Suit.CLUBS)
       flow.gameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
@@ -106,7 +106,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
     "consider Ace as 1 point valued" in {
       val flow = Helpers.createFlow()
 
-      flow.gameContext.bet = 5
+      flow.gameContext.bet = Some(5)
       flow.gameContext.player.hand += (
         Card(Rank.SIX, Suit.CLUBS),
         Card(Rank.ACE, Suit.CLUBS),
@@ -125,7 +125,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       )
 
       gameContext.outcome shouldBe None
-      gameContext.bet shouldBe 5
+      gameContext.bet shouldBe Some(5)
       gameContext.totalWin shouldBe 0
     }
 
@@ -133,7 +133,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val flow = Helpers.createFlow()
 
       flow.requestContext.action = ActionType.STAND
-      flow.gameContext.bet = 5
+      flow.gameContext.bet = Some(5)
       flow.gameContext.player.hand += (
         Card(Rank.EIGHT, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
@@ -162,7 +162,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       )
 
       gameContext.outcome shouldBe Some(Outcome.TIE)
-      gameContext.bet shouldBe 5
+      gameContext.bet shouldBe Some(5)
       gameContext.totalWin shouldBe 5
       gameContext.roundEnded shouldBe true
     }
@@ -170,7 +170,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
     "determine round outcome as TIE cause both have BJ" in {
       val flow = Helpers.createFlow()
 
-      flow.gameContext.bet = 5
+      flow.gameContext.bet = Some(5)
       flow.gameContext.player.hand += (
         Card(Rank.ACE, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
@@ -197,7 +197,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       )
 
       gameContext.outcome shouldBe Some(Outcome.TIE)
-      gameContext.bet shouldBe 5
+      gameContext.bet shouldBe Some(5)
       gameContext.totalWin shouldBe 5
       gameContext.roundEnded shouldBe true
     }
@@ -206,7 +206,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val flow = Helpers.createFlow()
 
       flow.requestContext.action = ActionType.STAND
-      flow.gameContext.bet = 5
+      flow.gameContext.bet = Some(5)
       flow.gameContext.player.hand += (
         Card(Rank.NINE, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
@@ -235,7 +235,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       )
 
       gameContext.outcome shouldBe Some(Outcome.PLAYER)
-      gameContext.bet shouldBe 5f
+      gameContext.bet shouldBe Some(5f)
       gameContext.totalWin shouldBe 10f
       gameContext.roundEnded shouldBe true
     }
@@ -244,7 +244,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val flow = Helpers.createFlow()
 
       flow.requestContext.action = ActionType.STAND
-      flow.gameContext.bet = 5
+      flow.gameContext.bet = Some(5)
       flow.gameContext.player.hand += (
         Card(Rank.NINE, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
@@ -274,7 +274,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       )
 
       gameContext.outcome shouldBe Some(Outcome.PLAYER)
-      gameContext.bet shouldBe 5f
+      gameContext.bet shouldBe Some(5f)
       gameContext.totalWin shouldBe 10f
       gameContext.roundEnded shouldBe true
     }
@@ -283,7 +283,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val flow = Helpers.createFlow()
 
       flow.requestContext.action = ActionType.HIT
-      flow.gameContext.bet = 5
+      flow.gameContext.bet = Some(5)
       flow.gameContext.player.hand += (
         Card(Rank.NINE, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
@@ -311,7 +311,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       )
 
       gameContext.outcome shouldBe Some(Outcome.DEALER)
-      gameContext.bet shouldBe 5f
+      gameContext.bet shouldBe Some(5f)
       gameContext.totalWin shouldBe 0f
       gameContext.roundEnded shouldBe true
     }

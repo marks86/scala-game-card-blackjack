@@ -99,7 +99,7 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
   private def calculateWin(flow: Flow): Unit = {
     val gameContext = flow.gameContext
     val outcome = gameContext.outcome
-    val bet = gameContext.bet
+    val bet = gameContext.bet.getOrElse(0f)
 
     gameContext.totalWin = outcome match {
       case Some(Outcome.PLAYER) ⇒
