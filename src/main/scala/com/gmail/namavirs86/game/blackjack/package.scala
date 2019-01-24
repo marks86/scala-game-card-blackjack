@@ -31,13 +31,13 @@ package object blackjack {
   val config = GameConfig(
     id = "bj",
     actions = Map(
-      RequestType.DEAL → DealAction.props(
+      ActionType.DEAL → DealAction.props(
         shoeManagerSettings
       ),
-      RequestType.HIT → HitAction.props(
+      ActionType.HIT → HitAction.props(
         shoeManagerSettings
       ),
-      RequestType.STAND → StandAction.props(
+      ActionType.STAND → StandAction.props(
         StandActionSettings(
           shoeManagerSettings,
           cardValues,
