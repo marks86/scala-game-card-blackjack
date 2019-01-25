@@ -1,9 +1,11 @@
 package com.gmail.namavirs86.game
 
+import akka.actor.Props
 import com.gmail.namavirs86.game.blackjack.Definitions.{BehaviorSettings, BlackjackActionType, StandActionSettings}
 import com.gmail.namavirs86.game.blackjack.actions.{DealAction, HitAction, StandAction}
 import com.gmail.namavirs86.game.blackjack.adapters.ResponseAdapter
 import com.gmail.namavirs86.game.card.core.Definitions._
+import com.gmail.namavirs86.game.card.core.Game
 
 package object blackjack {
 
@@ -28,7 +30,7 @@ package object blackjack {
     cutCardPosition = 40,
   )
 
-  val config = GameConfig(
+  private def config = GameConfig(
     id = "bj",
     actions = Map(
       BlackjackActionType.DEAL → DealAction.props(
@@ -59,5 +61,9 @@ package object blackjack {
       )
     )
   )
+
+  val id: String = config.id
+
+  def props: Props = Game.props(config)
 
 }
