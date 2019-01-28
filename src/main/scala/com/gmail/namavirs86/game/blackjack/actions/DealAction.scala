@@ -18,7 +18,13 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
   private val shoeManager = new ShoeManager(shoeSettings)
 
   def process(flow: Flow): Unit = {
-    val gameContext = flow.gameContext.getOrElse(createDefaultGameContext())
+    val gameContext = flow.gameContext match {
+      case Some(context: GameContext) ⇒ context
+      case None ⇒
+        flow.gameContext = Some(createDefaultGameContext())
+        flow.gameContext.get
+    }
+
     val dealer = gameContext.dealer
     val player = gameContext.player
 
@@ -28,7 +34,6 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
     player.hand += drawCard(flow)
 
     gameContext.bet = flow.requestContext.bet
-    flow.gameContext = Some(gameContext)
   }
 
   // @TODO: validate deal action process
