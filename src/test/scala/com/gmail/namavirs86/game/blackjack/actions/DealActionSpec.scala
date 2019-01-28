@@ -3,6 +3,7 @@ package com.gmail.namavirs86.game.blackjack.actions
 import akka.actor.ActorSystem
 import akka.testkit.{TestKit, TestProbe}
 import com.gmail.namavirs86.game.card.core.Definitions.{Card, Rank, ShoeManagerSettings, Suit}
+import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
 import com.gmail.namavirs86.game.card.core.helpers.Helpers
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
 
@@ -30,7 +31,7 @@ class DealActionSpec(_system: ActorSystem)
       )
       val action = system.actorOf(DealAction.props(settings))
       val flow = Helpers.createFlow()
-      flow.gameContext.shoe = List(
+      flow.gameContext.getOrElse(throw NoGameContextException()).shoe = List(
         Card(Rank.TWO, Suit.CLUBS),
         Card(Rank.THREE, Suit.CLUBS),
         Card(Rank.FOUR, Suit.CLUBS),
@@ -40,8 +41,9 @@ class DealActionSpec(_system: ActorSystem)
       action.tell(DealAction.RequestActionProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[DealAction.ResponseActionProcess]
-      val dealer = response.flow.gameContext.dealer
-      val player = response.flow.gameContext.player
+      val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
+      val dealer = gameContext.dealer
+      val player = gameContext.player
 
       dealer.hand shouldBe ListBuffer(Card(Rank.TWO, Suit.CLUBS))
       player.hand shouldBe ListBuffer(Card(Rank.THREE, Suit.CLUBS), Card(Rank.FIVE, Suit.CLUBS))

@@ -4,6 +4,7 @@ import akka.actor.Props
 import com.gmail.namavirs86.game.card.core.Definitions._
 import com.gmail.namavirs86.game.blackjack.Definitions.StandActionSettings
 import com.gmail.namavirs86.game.blackjack.utils.CardUtils
+import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
 import com.gmail.namavirs86.game.card.core.ShoeManager
 import com.gmail.namavirs86.game.card.core.actions.{BaseAction, BaseActionMessages}
 
@@ -26,7 +27,7 @@ final class StandAction(settings: StandActionSettings) extends BaseAction {
   private val cardUtils = new CardUtils()
 
   def process(flow: Flow): Unit = {
-    val gameContext = flow.gameContext
+    val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
     val dealer = gameContext.dealer
 
     dealer.hand += dealer.holeCard.get
@@ -48,7 +49,7 @@ final class StandAction(settings: StandActionSettings) extends BaseAction {
 
   private def drawCard(flow: Flow): Card = {
     val rng = flow.rng
-    val gameContext = flow.gameContext
+    val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
     val (card, shoe) = shoeManager.draw(rng, gameContext.shoe)
     gameContext.shoe = shoe
     card

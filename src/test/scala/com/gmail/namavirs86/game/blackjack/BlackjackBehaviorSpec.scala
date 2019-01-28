@@ -7,6 +7,7 @@ import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
 import com.gmail.namavirs86.game.blackjack.Definitions.{BehaviorSettings, BlackjackActionType}
 import com.gmail.namavirs86.game.card.core.helpers.Helpers
 import com.gmail.namavirs86.game.card.core.Definitions._
+import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
 
 class BlackjackBehaviorSpec(_system: ActorSystem)
   extends TestKit(_system)
@@ -36,13 +37,14 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
   "Blackjack Behavior" should {
     "calculate player and dealer hand values" in {
       val flow = Helpers.createFlow()
-      flow.gameContext.player.hand += (Card(Rank.TWO, Suit.CLUBS), Card(Rank.THREE, Suit.CLUBS))
-      flow.gameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
+      val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
+      initGameContext.player.hand += (Card(Rank.TWO, Suit.CLUBS), Card(Rank.THREE, Suit.CLUBS))
+      initGameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
-      val gameContext = response.flow.gameContext
+      val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.player.value shouldBe 5
       gameContext.dealer.value shouldBe 11
@@ -52,16 +54,17 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
     "reveal hole card because of dealers BJ" in {
       val flow = Helpers.createFlow()
+      val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
-      flow.gameContext.bet = Some(5f)
-      flow.gameContext.player.hand += (Card(Rank.TWO, Suit.CLUBS), Card(Rank.THREE, Suit.CLUBS))
-      flow.gameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
-      flow.gameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
+      initGameContext.bet = Some(5f)
+      initGameContext.player.hand += (Card(Rank.TWO, Suit.CLUBS), Card(Rank.THREE, Suit.CLUBS))
+      initGameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
+      initGameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
-      val gameContext = response.flow.gameContext
+      val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
         hand = ListBuffer(Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
@@ -76,16 +79,17 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
     "reveal hole card because of players BJ" in {
       val flow = Helpers.createFlow()
+      val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
-      flow.gameContext.bet = Some(5)
-      flow.gameContext.player.hand += (Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS))
-      flow.gameContext.dealer.hand += Card(Rank.TWO, Suit.CLUBS)
-      flow.gameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
+      initGameContext.bet = Some(5)
+      initGameContext.player.hand += (Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS))
+      initGameContext.dealer.hand += Card(Rank.TWO, Suit.CLUBS)
+      initGameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
-      val gameContext = response.flow.gameContext
+      val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.player shouldBe PlayerContext(
         hand = ListBuffer(Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
@@ -105,9 +109,10 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
     "consider Ace as 1 point valued" in {
       val flow = Helpers.createFlow()
+      val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
-      flow.gameContext.bet = Some(5)
-      flow.gameContext.player.hand += (
+      initGameContext.bet = Some(5)
+      initGameContext.player.hand += (
         Card(Rank.SIX, Suit.CLUBS),
         Card(Rank.ACE, Suit.CLUBS),
         Card(Rank.ACE, Suit.CLUBS)
@@ -116,7 +121,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
-      val gameContext = response.flow.gameContext
+      val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.player shouldBe PlayerContext(
         hand = ListBuffer(Card(Rank.SIX, Suit.CLUBS), Card(Rank.ACE, Suit.CLUBS), Card(Rank.ACE, Suit.CLUBS)),
@@ -131,14 +136,15 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
     "determine round outcome as TIE" in {
       val flow = Helpers.createFlow()
+      val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
       flow.requestContext.action = BlackjackActionType.STAND
-      flow.gameContext.bet = Some(5)
-      flow.gameContext.player.hand += (
+      initGameContext.bet = Some(5)
+      initGameContext.player.hand += (
         Card(Rank.EIGHT, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
-      flow.gameContext.dealer.hand += (
+      initGameContext.dealer.hand += (
         Card(Rank.EIGHT, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
@@ -146,7 +152,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
-      val gameContext = response.flow.gameContext
+      val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
         hand = ListBuffer(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
@@ -169,19 +175,20 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
     "determine round outcome as TIE cause both have BJ" in {
       val flow = Helpers.createFlow()
+      val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
-      flow.gameContext.bet = Some(5)
-      flow.gameContext.player.hand += (
+      initGameContext.bet = Some(5)
+      initGameContext.player.hand += (
         Card(Rank.ACE, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
-      flow.gameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
-      flow.gameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
+      initGameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
+      initGameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
-      val gameContext = response.flow.gameContext
+      val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
         hand = ListBuffer(Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
@@ -204,14 +211,15 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
     "determine round outcome as PLAYER win" in {
       val flow = Helpers.createFlow()
+      val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
       flow.requestContext.action = BlackjackActionType.STAND
-      flow.gameContext.bet = Some(5)
-      flow.gameContext.player.hand += (
+      initGameContext.bet = Some(5)
+      initGameContext.player.hand += (
         Card(Rank.NINE, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
-      flow.gameContext.dealer.hand += (
+      initGameContext.dealer.hand += (
         Card(Rank.EIGHT, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
@@ -219,7 +227,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
-      val gameContext = response.flow.gameContext
+      val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
         hand = ListBuffer(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
@@ -242,14 +250,15 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
     "end round because dealer goes bust" in {
       val flow = Helpers.createFlow()
+      val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
       flow.requestContext.action = BlackjackActionType.STAND
-      flow.gameContext.bet = Some(5)
-      flow.gameContext.player.hand += (
+      initGameContext.bet = Some(5)
+      initGameContext.player.hand += (
         Card(Rank.NINE, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
-      flow.gameContext.dealer.hand += (
+      initGameContext.dealer.hand += (
         Card(Rank.EIGHT, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
@@ -258,7 +267,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
-      val gameContext = response.flow.gameContext
+      val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
         hand = ListBuffer(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
@@ -281,21 +290,22 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
     "end round because player goes bust" in {
       val flow = Helpers.createFlow()
+      val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
       flow.requestContext.action = BlackjackActionType.HIT
-      flow.gameContext.bet = Some(5)
-      flow.gameContext.player.hand += (
+      initGameContext.bet = Some(5)
+      initGameContext.player.hand += (
         Card(Rank.NINE, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
-      flow.gameContext.dealer.hand += Card(Rank.EIGHT, Suit.CLUBS)
-      flow.gameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
+      initGameContext.dealer.hand += Card(Rank.EIGHT, Suit.CLUBS)
+      initGameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
       val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
-      val gameContext = response.flow.gameContext
+      val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
         hand = ListBuffer(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
