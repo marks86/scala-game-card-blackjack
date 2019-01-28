@@ -40,6 +40,7 @@ final class StandAction(settings: StandActionSettings) extends BaseAction {
     }
   }
 
+  // @TODO: validate stand action process
   def validateRequest(flow: Flow): Unit = {}
 
   private def hasSoft(dealer: DealerContext): Boolean = {

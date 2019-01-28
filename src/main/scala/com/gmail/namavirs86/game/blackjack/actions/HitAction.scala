@@ -26,5 +26,6 @@ final class HitAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
     gameContext.shoe = shoe
   }
 
+  // @TODO: validate hit action process
   def validateRequest(flow: Flow): Unit = {}
 }
