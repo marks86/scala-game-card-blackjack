@@ -1,6 +1,5 @@
 package com.gmail.namavirs86.game.blackjack
 
-import scala.collection.mutable.ListBuffer
 import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{TestKit, TestProbe}
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
@@ -38,8 +37,8 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
     "calculate player and dealer hand values" in {
       val flow = Helpers.createFlow()
       val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
-      initGameContext.player.hand += (Card(Rank.TWO, Suit.CLUBS), Card(Rank.THREE, Suit.CLUBS))
-      initGameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
+      initGameContext.player.hand = List(Card(Rank.TWO, Suit.CLUBS), Card(Rank.THREE, Suit.CLUBS))
+      initGameContext.dealer.hand = List(Card(Rank.ACE, Suit.CLUBS))
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
@@ -57,8 +56,8 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
       initGameContext.bet = Some(5f)
-      initGameContext.player.hand += (Card(Rank.TWO, Suit.CLUBS), Card(Rank.THREE, Suit.CLUBS))
-      initGameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
+      initGameContext.player.hand = List(Card(Rank.TWO, Suit.CLUBS), Card(Rank.THREE, Suit.CLUBS))
+      initGameContext.dealer.hand = List(Card(Rank.ACE, Suit.CLUBS))
       initGameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
@@ -67,7 +66,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
-        hand = ListBuffer(Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
+        hand = List(Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
         value = 21,
         holeCard = None,
         hasBJ = true)
@@ -82,8 +81,8 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
       initGameContext.bet = Some(5)
-      initGameContext.player.hand += (Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS))
-      initGameContext.dealer.hand += Card(Rank.TWO, Suit.CLUBS)
+      initGameContext.player.hand = List(Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS))
+      initGameContext.dealer.hand = List(Card(Rank.TWO, Suit.CLUBS))
       initGameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
@@ -92,12 +91,12 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.player shouldBe PlayerContext(
-        hand = ListBuffer(Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
+        hand = List(Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
         value = 21,
         hasBJ = true)
 
       gameContext.dealer shouldBe DealerContext(
-        hand = ListBuffer(Card(Rank.TWO, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
+        hand = List(Card(Rank.TWO, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
         value = 12,
         holeCard = None,
         hasBJ = false)
@@ -112,7 +111,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
       initGameContext.bet = Some(5)
-      initGameContext.player.hand += (
+      initGameContext.player.hand = List(
         Card(Rank.SIX, Suit.CLUBS),
         Card(Rank.ACE, Suit.CLUBS),
         Card(Rank.ACE, Suit.CLUBS)
@@ -124,7 +123,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.player shouldBe PlayerContext(
-        hand = ListBuffer(Card(Rank.SIX, Suit.CLUBS), Card(Rank.ACE, Suit.CLUBS), Card(Rank.ACE, Suit.CLUBS)),
+        hand = List(Card(Rank.SIX, Suit.CLUBS), Card(Rank.ACE, Suit.CLUBS), Card(Rank.ACE, Suit.CLUBS)),
         value = 18,
         hasBJ = false
       )
@@ -140,11 +139,11 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
       flow.requestContext.action = BlackjackActionType.STAND
       initGameContext.bet = Some(5)
-      initGameContext.player.hand += (
+      initGameContext.player.hand = List(
         Card(Rank.EIGHT, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
-      initGameContext.dealer.hand += (
+      initGameContext.dealer.hand = List(
         Card(Rank.EIGHT, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
@@ -155,14 +154,14 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
-        hand = ListBuffer(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
+        hand = List(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
         value = 18,
         holeCard = None,
         hasBJ = false
       )
 
       gameContext.player shouldBe PlayerContext(
-        hand = ListBuffer(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
+        hand = List(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
         value = 18,
         hasBJ = false
       )
@@ -178,11 +177,11 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val initGameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
       initGameContext.bet = Some(5)
-      initGameContext.player.hand += (
+      initGameContext.player.hand = List(
         Card(Rank.ACE, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
-      initGameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
+      initGameContext.dealer.hand = List(Card(Rank.ACE, Suit.CLUBS))
       initGameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
@@ -191,14 +190,14 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
-        hand = ListBuffer(Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
+        hand = List(Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
         value = 21,
         holeCard = None,
         hasBJ = true
       )
 
       gameContext.player shouldBe PlayerContext(
-        hand = ListBuffer(Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
+        hand = List(Card(Rank.ACE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
         value = 21,
         hasBJ = true
       )
@@ -215,11 +214,11 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
       flow.requestContext.action = BlackjackActionType.STAND
       initGameContext.bet = Some(5)
-      initGameContext.player.hand += (
+      initGameContext.player.hand = List(
         Card(Rank.NINE, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
-      initGameContext.dealer.hand += (
+      initGameContext.dealer.hand = List(
         Card(Rank.EIGHT, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
@@ -230,14 +229,14 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
-        hand = ListBuffer(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
+        hand = List(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
         value = 18,
         holeCard = None,
         hasBJ = false
       )
 
       gameContext.player shouldBe PlayerContext(
-        hand = ListBuffer(Card(Rank.NINE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
+        hand = List(Card(Rank.NINE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
         value = 19,
         hasBJ = false
       )
@@ -254,11 +253,11 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
       flow.requestContext.action = BlackjackActionType.STAND
       initGameContext.bet = Some(5)
-      initGameContext.player.hand += (
+      initGameContext.player.hand = List(
         Card(Rank.NINE, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
-      initGameContext.dealer.hand += (
+      initGameContext.dealer.hand = List(
         Card(Rank.EIGHT, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
@@ -270,14 +269,14 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
-        hand = ListBuffer(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
+        hand = List(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
         value = 28,
         holeCard = None,
         hasBJ = false
       )
 
       gameContext.player shouldBe PlayerContext(
-        hand = ListBuffer(Card(Rank.NINE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
+        hand = List(Card(Rank.NINE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
         value = 19,
         hasBJ = false
       )
@@ -294,12 +293,12 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
       flow.requestContext.action = BlackjackActionType.HIT
       initGameContext.bet = Some(5)
-      initGameContext.player.hand += (
+      initGameContext.player.hand = List(
         Card(Rank.NINE, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
         Card(Rank.TEN, Suit.CLUBS),
       )
-      initGameContext.dealer.hand += Card(Rank.EIGHT, Suit.CLUBS)
+      initGameContext.dealer.hand = List(Card(Rank.EIGHT, Suit.CLUBS))
       initGameContext.dealer.holeCard = Some(Card(Rank.TEN, Suit.CLUBS))
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
@@ -308,14 +307,14 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
-        hand = ListBuffer(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
+        hand = List(Card(Rank.EIGHT, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
         value = 18,
         holeCard = None,
         hasBJ = false
       )
 
       gameContext.player shouldBe PlayerContext(
-        hand = ListBuffer(Card(Rank.NINE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
+        hand = List(Card(Rank.NINE, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS), Card(Rank.TEN, Suit.CLUBS)),
         value = 29,
         hasBJ = false
       )

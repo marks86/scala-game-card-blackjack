@@ -17,15 +17,15 @@ final class HitAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
 
   def process(flow: Flow): Unit = {
     val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
-    val playerHand = gameContext.player.hand
+    val player = gameContext.player
     val rng = flow.rng
 
     val (card, shoe) = shoeManager.draw(rng, gameContext.shoe)
-    playerHand += card
 
     gameContext.shoe = shoe
+    player.hand = player.hand :+ card
   }
 
-  // @TODO: validate hit action process
+  // @TODO: validate hit action request
   def validateRequest(flow: Flow): Unit = {}
 }

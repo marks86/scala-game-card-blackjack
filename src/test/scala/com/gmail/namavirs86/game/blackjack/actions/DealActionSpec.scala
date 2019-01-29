@@ -7,8 +7,6 @@ import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
 import com.gmail.namavirs86.game.card.core.helpers.Helpers
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
 
-import scala.collection.mutable.ListBuffer
-
 class DealActionSpec(_system: ActorSystem)
   extends TestKit(_system)
     with Matchers
@@ -45,8 +43,8 @@ class DealActionSpec(_system: ActorSystem)
       val dealer = gameContext.dealer
       val player = gameContext.player
 
-      dealer.hand shouldBe ListBuffer(Card(Rank.TWO, Suit.CLUBS))
-      player.hand shouldBe ListBuffer(Card(Rank.THREE, Suit.CLUBS), Card(Rank.FIVE, Suit.CLUBS))
+      dealer.hand shouldBe List(Card(Rank.TWO, Suit.CLUBS))
+      player.hand shouldBe List(Card(Rank.THREE, Suit.CLUBS), Card(Rank.FIVE, Suit.CLUBS))
       dealer.holeCard shouldBe Some(Card(Rank.FOUR, Suit.CLUBS))
     }
   }

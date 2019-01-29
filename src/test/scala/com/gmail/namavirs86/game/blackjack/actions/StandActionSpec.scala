@@ -8,8 +8,6 @@ import com.gmail.namavirs86.game.card.core.Definitions._
 import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
 
-import scala.collection.mutable.ListBuffer
-
 class StandActionSpec(_system: ActorSystem)
   extends TestKit(_system)
     with Matchers
@@ -43,7 +41,7 @@ class StandActionSpec(_system: ActorSystem)
       gameContext.shoe = List(
         Card(Rank.ACE, Suit.CLUBS),
       )
-      gameContext.dealer.hand += Card(Rank.TEN, Suit.CLUBS)
+      gameContext.dealer.hand = List(Card(Rank.TEN, Suit.CLUBS))
       gameContext.dealer.holeCard = Some(Card(Rank.SIX, Suit.CLUBS))
 
       action.tell(StandAction.RequestActionProcess(probe.ref, flow), probe.ref)
@@ -52,7 +50,7 @@ class StandActionSpec(_system: ActorSystem)
       val dealer = response.flow.gameContext.getOrElse(throw NoGameContextException()).dealer
 
       dealer shouldBe DealerContext(
-        hand = ListBuffer(Card(Rank.TEN, Suit.CLUBS), Card(Rank.SIX, Suit.CLUBS), Card(Rank.ACE, Suit.CLUBS)),
+        hand = List(Card(Rank.TEN, Suit.CLUBS), Card(Rank.SIX, Suit.CLUBS), Card(Rank.ACE, Suit.CLUBS)),
         value = 17,
         holeCard = None,
         hasBJ = false,
@@ -65,7 +63,7 @@ class StandActionSpec(_system: ActorSystem)
       gameContext.shoe = List(
         Card(Rank.ACE, Suit.CLUBS),
       )
-      gameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
+      gameContext.dealer.hand = List(Card(Rank.ACE, Suit.CLUBS))
       gameContext.dealer.holeCard = Some(Card(Rank.SIX, Suit.CLUBS))
 
       action.tell(StandAction.RequestActionProcess(probe.ref, flow), probe.ref)
@@ -74,7 +72,7 @@ class StandActionSpec(_system: ActorSystem)
       val dealer = response.flow.gameContext.getOrElse(throw NoGameContextException()).dealer
 
       dealer shouldBe DealerContext(
-        hand = ListBuffer(Card(Rank.ACE, Suit.CLUBS), Card(Rank.SIX, Suit.CLUBS), Card(Rank.ACE, Suit.CLUBS)),
+        hand = List(Card(Rank.ACE, Suit.CLUBS), Card(Rank.SIX, Suit.CLUBS), Card(Rank.ACE, Suit.CLUBS)),
         value = 18,
         holeCard = None,
         hasBJ = false,
@@ -87,7 +85,7 @@ class StandActionSpec(_system: ActorSystem)
       gameContext.shoe = List(
         Card(Rank.ACE, Suit.CLUBS),
       )
-      gameContext.dealer.hand += Card(Rank.ACE, Suit.CLUBS)
+      gameContext.dealer.hand = List(Card(Rank.ACE, Suit.CLUBS))
       gameContext.dealer.holeCard = Some(Card(Rank.SEVEN, Suit.CLUBS))
 
       action.tell(StandAction.RequestActionProcess(probe.ref, flow), probe.ref)
@@ -96,7 +94,7 @@ class StandActionSpec(_system: ActorSystem)
       val dealer = response.flow.gameContext.getOrElse(throw NoGameContextException()).dealer
 
       dealer shouldBe DealerContext(
-        hand = ListBuffer(Card(Rank.ACE, Suit.CLUBS), Card(Rank.SEVEN, Suit.CLUBS)),
+        hand = List(Card(Rank.ACE, Suit.CLUBS), Card(Rank.SEVEN, Suit.CLUBS)),
         value = 18,
         holeCard = None,
         hasBJ = false,

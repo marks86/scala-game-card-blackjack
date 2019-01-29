@@ -54,7 +54,7 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
     val isPlayerBust = cardUtils.isBust(player.value, bjValue)
 
     if (hasHoleCard && (hasBJ || isPlayerBust)) {
-      dealer.hand += dealer.holeCard.get
+      dealer.hand = dealer.hand :+ dealer.holeCard.get
       dealer.holeCard = None
     }
 
