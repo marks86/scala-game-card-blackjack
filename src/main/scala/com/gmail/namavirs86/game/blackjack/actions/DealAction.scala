@@ -16,14 +16,21 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
   private val shoeManager = new ShoeManager(shoeSettings)
 
   def process(flow: Flow): Option[GameContext] = {
-    val dealerHand = List(drawCard(flow, isNewRound = true))
-    val playerHand = List(drawCard(flow), drawCard(flow))
-    val holeCard = Some(drawCard(flow))
-
-    val shoe = flow.gameContext match {
+    val initShoe = flow.gameContext match {
       case Some(context: GameContext) ⇒ context.shoe
       case None ⇒ List.empty[Card]
     }
+
+    val rng = flow.rng
+    val draw1 = shoeManager.draw(rng, initShoe, isNewRound = true)
+    val draw2 = shoeManager.draw(rng, draw1._2)
+    val draw3 = shoeManager.draw(rng, draw2._2)
+    val draw4 = shoeManager.draw(rng, draw3._2)
+
+    val dealerHand = List(draw1._1)
+    val playerHand = List(draw2._1, draw3._1)
+    val holeCard = Some(draw4._1)
+    val shoe = draw4._2
 
     Some(GameContext(
       dealer = DealerContext(
@@ -48,11 +55,4 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
   // @TODO: validate deal action request
   def validateRequest(flow: Flow): Unit = {}
 
-  private def drawCard(flow: Flow, isNewRound: Boolean = false): Card = {
-    val rng = flow.rng
-    val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
-    val (card, shoe) = shoeManager.draw(rng, gameContext.shoe, isNewRound)
-    gameContext.shoe = shoe
-    card
-  }
 }

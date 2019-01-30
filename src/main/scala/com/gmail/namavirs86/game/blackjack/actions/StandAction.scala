@@ -29,14 +29,18 @@ final class StandAction(settings: StandActionSettings) extends BaseAction {
   def process(flow: Flow): Option[GameContext] = {
     val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
     val dealer = gameContext.dealer
+    val rng = flow.rng
 
     var hand = dealer.hand ++ dealer.holeCard
     var value = calcHandValue(hand)
+    var shoe = gameContext.shoe
     val hasNext = () ⇒ value < dealerStandValue || hasSoft(hand, value)
 
     while (hasNext()) {
-      hand = hand :+ drawCard(flow)
+      val draw = shoeManager.draw(rng, shoe)
+      hand = hand :+ draw._1
       value = calcHandValue(hand)
+      shoe = draw._2
     }
 
     Some(gameContext.copy(
@@ -44,7 +48,8 @@ final class StandAction(settings: StandActionSettings) extends BaseAction {
         hand = hand,
         value = value,
         holeCard = None,
-      )
+      ),
+      shoe = shoe
     ))
   }
 
@@ -55,14 +60,6 @@ final class StandAction(settings: StandActionSettings) extends BaseAction {
     hand.length == 2 &&
       hand.head.rank.equals(Rank.ACE) &&
       value == dealerSoftValue
-  }
-
-  private def drawCard(flow: Flow): Card = {
-    val rng = flow.rng
-    val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
-    val (card, shoe) = shoeManager.draw(rng, gameContext.shoe)
-    gameContext.shoe = shoe
-    card
   }
 
   private def calcHandValue(hand: Hand): Int =
