@@ -54,7 +54,7 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
     val hasHoleCard = dealer.holeCard.nonEmpty
 
     val hasBJ = if (hasHoleCard)
-      isBlackjack(dealer.hand :+ dealer.holeCard.get) else dealer.hasBJ
+      isBlackjack(dealer.hand ++ dealer.holeCard) else dealer.hasBJ
 
     val revealHoleCard = hasHoleCard &&
       (hasBJ ||
@@ -62,7 +62,7 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
         cardUtils.isBust(player.value, bjValue))
 
     val (hand, holeCard) = if (revealHoleCard)
-      (dealer.hand :+ dealer.holeCard.get, None) else (dealer.hand, dealer.holeCard)
+      (dealer.hand ++ dealer.holeCard, None) else (dealer.hand, dealer.holeCard)
 
     val value = cardUtils.calculateHandValue(hand, cardValues, bjValue)
 
