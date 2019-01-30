@@ -3,6 +3,7 @@ package com.gmail.namavirs86.game.blackjack
 import akka.actor.Props
 import com.gmail.namavirs86.game.blackjack.Definitions.{BehaviorSettings, BlackjackActionType}
 import com.gmail.namavirs86.game.blackjack.utils.CardUtils
+import com.gmail.namavirs86.game.card.core.Definitions.Outcome.Outcome
 import com.gmail.namavirs86.game.card.core.{Behavior, BehaviorMessages}
 import com.gmail.namavirs86.game.card.core.Definitions._
 import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
@@ -16,72 +17,85 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
 
   private val cardUtils = new CardUtils()
 
-  def process(flow: Flow): Unit = {
+  def process(flow: Flow): Option[GameContext] = {
+    var gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
-    updatePlayerContext(flow)
+    gameContext = updatePlayerContext(gameContext)
 
-    updateDealerContext(flow)
+    gameContext = updateDealerContext(gameContext)
 
-    updateRoundEnded(flow)
+    gameContext = isRoundEnded(gameContext)
 
-    determineOutcome(flow)
+    gameContext = determineOutcome(gameContext)
 
-    calculateWin(flow)
+    gameContext = calculateWin(gameContext)
+
+    Some(gameContext)
   }
 
-  private def updatePlayerContext(flow: Flow): Unit = {
+  private def updatePlayerContext(gameContext: GameContext): GameContext = {
     val cardValues = settings.cardValues
     val bjValue = settings.bjValue
-    val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
     val player = gameContext.player
 
-    player.value = cardUtils.calculateHandValue(player.hand, cardValues, bjValue)
-    player.hasBJ = isBlackjack(player.hand)
+    gameContext.copy(
+      player = player.copy(
+        value = cardUtils.calculateHandValue(player.hand, cardValues, bjValue),
+        hasBJ = isBlackjack(player.hand)
+      )
+    )
   }
 
-  private def updateDealerContext(flow: Flow): Unit = {
-    val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
+  private def updateDealerContext(gameContext: GameContext): GameContext = {
+    val bjValue = settings.bjValue
+    val cardValues = settings.cardValues
     val dealer = gameContext.dealer
     val player = gameContext.player
     val hasHoleCard = dealer.holeCard.nonEmpty
 
-    if (hasHoleCard) {
-      dealer.hasBJ = isBlackjack(dealer.hand ++ dealer.holeCard)
-    }
+    val hasBJ = if (hasHoleCard)
+      isBlackjack(dealer.hand :+ dealer.holeCard.get) else dealer.hasBJ
 
-    val bjValue = settings.bjValue
-    val hasBJ = dealer.hasBJ || player.hasBJ
-    val isPlayerBust = cardUtils.isBust(player.value, bjValue)
+    val revealHoleCard = hasHoleCard &&
+      (hasBJ ||
+        player.hasBJ ||
+        cardUtils.isBust(player.value, bjValue))
 
-    if (hasHoleCard && (hasBJ || isPlayerBust)) {
-      dealer.hand = dealer.hand :+ dealer.holeCard.get
-      dealer.holeCard = None
-    }
+    val (hand, holeCard) = if (revealHoleCard)
+      (dealer.hand :+ dealer.holeCard.get, None) else (dealer.hand, dealer.holeCard)
 
-    val cardValues = settings.cardValues
-    dealer.value = cardUtils.calculateHandValue(dealer.hand, cardValues, bjValue)
+    val value = cardUtils.calculateHandValue(hand, cardValues, bjValue)
+
+    gameContext.copy(
+      dealer = dealer.copy(
+        hand = hand,
+        holeCard = holeCard,
+        value = value,
+        hasBJ = hasBJ,
+      )
+    )
   }
 
-  private def updateRoundEnded(flow: Flow): Unit = {
-    val isStand = flow.requestContext.action == BlackjackActionType.STAND
-    val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
+  private def isRoundEnded(gameContext: GameContext): GameContext = {
     val dealer = gameContext.dealer
     val player = gameContext.player
     val bjValue = settings.bjValue
 
-    gameContext.roundEnded = isStand ||
-      cardUtils.isBust(player.value, bjValue) ||
+    val roundEnded = cardUtils.isBust(player.value, bjValue) ||
       dealer.value >= settings.dealerStandValue ||
       dealer.hasBJ ||
       player.hasBJ
+
+    gameContext.copy(
+      roundEnded = roundEnded,
+    )
   }
 
-  private def determineOutcome(flow: Flow): Unit = {
-    val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
+  private def determineOutcome(gameContext: GameContext): GameContext = {
     val roundEnded = gameContext.roundEnded
 
     if (!roundEnded) {
-      return
+      return gameContext
     }
 
     val bjValue = settings.bjValue
@@ -97,23 +111,30 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
       case x if x == 0 ⇒ Outcome.TIE
     }
 
-    gameContext.outcome = Some(outcome)
+    gameContext.copy(
+      outcome = Some(outcome),
+    )
   }
 
-  private def calculateWin(flow: Flow): Unit = {
-    val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
+  private def calculateWin(gameContext: GameContext): GameContext = {
     val outcome = gameContext.outcome
     val bet = gameContext.bet.getOrElse(0f)
 
-    gameContext.totalWin = outcome match {
-      case Some(Outcome.PLAYER) ⇒
-        val hasBJ = gameContext.player.hasBJ
-        val multiplier = if (hasBJ) settings.bjPayoutMultiplier else settings.payoutMultiplier
-        bet * multiplier
+    val multiplier = () ⇒ {
+      val hasBJ = gameContext.player.hasBJ
+      if (hasBJ) settings.bjPayoutMultiplier else settings.payoutMultiplier
+    }
+
+    val totalWin = outcome match {
+      case Some(Outcome.PLAYER) ⇒ bet * multiplier()
       case Some(Outcome.TIE) ⇒ bet
       case Some(Outcome.DEALER) ⇒ 0
       case None ⇒ 0
     }
+
+    gameContext.copy(
+      totalWin = totalWin,
+    )
   }
 
   private def isBlackjack(hand: Hand): Boolean = {

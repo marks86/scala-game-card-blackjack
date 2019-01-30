@@ -1,6 +1,6 @@
 package com.gmail.namavirs86.game.blackjack.actions
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{TestKit, TestProbe}
 import com.gmail.namavirs86.game.card.core.Definitions.{Card, Rank, ShoeManagerSettings, Suit}
 import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
@@ -20,20 +20,26 @@ class DealActionSpec(_system: ActorSystem)
     shutdown(system)
   }
 
+  val probe = TestProbe()
+  val settings = ShoeManagerSettings(
+    deckCount = 1,
+    cutCardPosition = 52,
+  )
+  val action: ActorRef = system.actorOf(DealAction.props(settings))
+
   "Deal action" should {
     "draw the cards" in {
-      val probe = TestProbe()
-      val settings = ShoeManagerSettings(
-        deckCount = 1,
-        cutCardPosition = 52,
+      val initGameContext = Helpers.createGameContext().copy(
+        shoe = List(
+          Card(Rank.TWO, Suit.CLUBS),
+          Card(Rank.THREE, Suit.CLUBS),
+          Card(Rank.FIVE, Suit.CLUBS),
+          Card(Rank.FOUR, Suit.CLUBS),
+        )
       )
-      val action = system.actorOf(DealAction.props(settings))
-      val flow = Helpers.createFlow()
-      flow.gameContext.getOrElse(throw NoGameContextException()).shoe = List(
-        Card(Rank.TWO, Suit.CLUBS),
-        Card(Rank.THREE, Suit.CLUBS),
-        Card(Rank.FOUR, Suit.CLUBS),
-        Card(Rank.FIVE, Suit.CLUBS),
+
+      val flow = Helpers.createFlow().copy(
+        gameContext = Some(initGameContext),
       )
 
       action.tell(DealAction.RequestActionProcess(probe.ref, flow), probe.ref)

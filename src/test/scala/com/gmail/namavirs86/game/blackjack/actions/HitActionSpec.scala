@@ -1,9 +1,9 @@
 package com.gmail.namavirs86.game.blackjack.actions
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{TestKit, TestProbe}
 import com.gmail.namavirs86.game.card.core.helpers.Helpers
-import com.gmail.namavirs86.game.card.core.Definitions.{Card, Rank, Suit}
+import com.gmail.namavirs86.game.card.core.Definitions._
 import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
 
@@ -22,13 +22,19 @@ class HitActionSpec(_system: ActorSystem)
     shutdown(system)
   }
 
+  val probe = TestProbe()
+  val action: ActorRef = system.actorOf(HitAction.props(Helpers.shoeManagerSettings))
+
   "Hit action" should {
     "draw a new card for player" in {
-      val probe = TestProbe()
-      val action = system.actorOf(HitAction.props(Helpers.shoeManagerSettings))
-      val flow = Helpers.createFlow()
-      flow.gameContext.getOrElse(throw NoGameContextException()).shoe = List(
-        Card(Rank.TWO, Suit.CLUBS)
+      val initGameContext = Helpers.createGameContext().copy(
+        shoe = List(
+          Card(Rank.TWO, Suit.CLUBS)
+        )
+      )
+
+      val flow = Helpers.createFlow().copy(
+        gameContext = Some(initGameContext),
       )
 
       action.tell(HitAction.RequestActionProcess(probe.ref, flow), probe.ref)

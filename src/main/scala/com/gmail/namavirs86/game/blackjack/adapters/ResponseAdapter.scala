@@ -11,12 +11,12 @@ object ResponseAdapter extends BaseResponseAdapterMessages {
 final class ResponseAdapter extends BaseResponseAdapter {
   val id = "responseAdapter"
 
-  def process(flow: Flow): Unit = {
+  def process(flow: Flow): Option[GamePlayResponse] = {
     flow.gameContext match {
       case Some(gameContext: GameContext) ⇒
         val dealer = gameContext.dealer
         val player = gameContext.player
-        flow.response = Some(GamePlayResponse(
+        Some(GamePlayResponse(
           dealer = ResponseDealerContext(
             hand = dealer.hand,
             value = dealer.value,

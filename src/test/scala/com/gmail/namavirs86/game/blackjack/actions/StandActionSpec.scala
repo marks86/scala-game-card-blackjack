@@ -36,13 +36,19 @@ class StandActionSpec(_system: ActorSystem)
 
   "Stand action" should {
     "draw additional card and stand on 17" in {
-      val flow = Helpers.createFlow()
-      val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
-      gameContext.shoe = List(
-        Card(Rank.ACE, Suit.CLUBS),
+      val gameContext = Helpers.createGameContext().copy(
+        dealer = DealerContext(
+          hand = List(Card(Rank.TEN, Suit.CLUBS)),
+          value = 0,
+          holeCard = Some(Card(Rank.SIX, Suit.CLUBS)),
+          hasBJ = false,
+        ),
+        shoe = List(Card(Rank.ACE, Suit.CLUBS))
       )
-      gameContext.dealer.hand = List(Card(Rank.TEN, Suit.CLUBS))
-      gameContext.dealer.holeCard = Some(Card(Rank.SIX, Suit.CLUBS))
+
+      val flow = Helpers.createFlow().copy(
+        gameContext = Some(gameContext),
+      )
 
       action.tell(StandAction.RequestActionProcess(probe.ref, flow), probe.ref)
 
@@ -58,13 +64,19 @@ class StandActionSpec(_system: ActorSystem)
     }
 
     "draw additional card on soft hand" in {
-      val flow = Helpers.createFlow()
-      val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
-      gameContext.shoe = List(
-        Card(Rank.ACE, Suit.CLUBS),
+      val gameContext = Helpers.createGameContext().copy(
+        dealer = DealerContext(
+          hand = List(Card(Rank.ACE, Suit.CLUBS)),
+          value = 0,
+          holeCard = Some(Card(Rank.SIX, Suit.CLUBS)),
+          hasBJ = false,
+        ),
+        shoe =List(Card(Rank.ACE, Suit.CLUBS))
       )
-      gameContext.dealer.hand = List(Card(Rank.ACE, Suit.CLUBS))
-      gameContext.dealer.holeCard = Some(Card(Rank.SIX, Suit.CLUBS))
+
+      val flow = Helpers.createFlow().copy(
+        gameContext = Some(gameContext),
+      )
 
       action.tell(StandAction.RequestActionProcess(probe.ref, flow), probe.ref)
 
@@ -80,13 +92,19 @@ class StandActionSpec(_system: ActorSystem)
     }
 
     "not draw additional card" in {
-      val flow = Helpers.createFlow()
-      val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
-      gameContext.shoe = List(
-        Card(Rank.ACE, Suit.CLUBS),
+      val gameContext = Helpers.createGameContext().copy(
+        dealer = DealerContext(
+          hand = List(Card(Rank.ACE, Suit.CLUBS)),
+          value = 0,
+          holeCard = Some(Card(Rank.SEVEN, Suit.CLUBS)),
+          hasBJ = false,
+        ),
+        shoe =List(Card(Rank.ACE, Suit.CLUBS))
       )
-      gameContext.dealer.hand = List(Card(Rank.ACE, Suit.CLUBS))
-      gameContext.dealer.holeCard = Some(Card(Rank.SEVEN, Suit.CLUBS))
+
+      val flow = Helpers.createFlow().copy(
+        gameContext = Some(gameContext),
+      )
 
       action.tell(StandAction.RequestActionProcess(probe.ref, flow), probe.ref)
 

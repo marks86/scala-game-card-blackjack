@@ -15,19 +15,34 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
 
   private val shoeManager = new ShoeManager(shoeSettings)
 
-  def process(flow: Flow): Unit = {
-    flow.gameContext = Some(createDefaultGameContext(flow))
+  def process(flow: Flow): Option[GameContext] = {
+    val dealerHand = List(drawCard(flow, isNewRound = true))
+    val playerHand = List(drawCard(flow), drawCard(flow))
+    val holeCard = Some(drawCard(flow))
 
-    val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
-    val dealer = gameContext.dealer
-    val player = gameContext.player
+    val shoe = flow.gameContext match {
+      case Some(context: GameContext) ⇒ context.shoe
+      case None ⇒ List.empty[Card]
+    }
 
-    dealer.hand = dealer.hand :+ drawCard(flow, isNewRound = true)
-    player.hand = player.hand :+ drawCard(flow)
-    dealer.holeCard = Some(drawCard(flow))
-    player.hand = player.hand :+ drawCard(flow)
-
-    gameContext.bet = flow.requestContext.bet
+    Some(GameContext(
+      dealer = DealerContext(
+        hand = dealerHand,
+        value = 0,
+        holeCard = holeCard,
+        hasBJ = false,
+      ),
+      player = PlayerContext(
+        hand = playerHand,
+        value = 0,
+        hasBJ = false,
+      ),
+      shoe = shoe,
+      bet = None,
+      totalWin = 0f,
+      outcome = None,
+      roundEnded = true,
+    ))
   }
 
   // @TODO: validate deal action request
@@ -39,31 +54,5 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
     val (card, shoe) = shoeManager.draw(rng, gameContext.shoe, isNewRound)
     gameContext.shoe = shoe
     card
-  }
-
-  private def createDefaultGameContext(flow: Flow): GameContext = {
-    val shoe = flow.gameContext match {
-      case Some(context: GameContext) ⇒ context.shoe
-      case None ⇒ List.empty[Card]
-    }
-
-    GameContext(
-      dealer = DealerContext(
-        hand = List.empty[Card],
-        value = 0,
-        holeCard = None,
-        hasBJ = false,
-      ),
-      player = PlayerContext(
-        hand = List.empty[Card],
-        value = 0,
-        hasBJ = false,
-      ),
-      shoe = shoe,
-      bet = None,
-      totalWin = 0f,
-      outcome = None,
-      roundEnded = true,
-    )
   }
 }

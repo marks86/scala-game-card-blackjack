@@ -26,26 +26,35 @@ final class StandAction(settings: StandActionSettings) extends BaseAction {
   private val shoeManager = new ShoeManager(shoeSettings)
   private val cardUtils = new CardUtils()
 
-  def process(flow: Flow): Unit = {
+  def process(flow: Flow): Option[GameContext] = {
     val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
     val dealer = gameContext.dealer
 
-    dealer.hand = dealer.hand :+ dealer.holeCard.get
-    dealer.holeCard = None
-    dealer.value = calcHandValue(dealer.hand)
+    var hand = dealer.hand :+ dealer.holeCard.get
+    var value = calcHandValue(hand)
+    val hasNext = () ⇒ value < dealerStandValue || hasSoft(hand, value)
 
-    while (dealer.value < dealerStandValue || hasSoft(dealer)) {
-      dealer.hand = dealer.hand :+ drawCard(flow)
-      dealer.value = calcHandValue(dealer.hand)
+    while (hasNext()) {
+      hand = hand :+ drawCard(flow)
+      value = calcHandValue(hand)
     }
+
+    Some(gameContext.copy(
+      dealer.copy(
+        hand = hand,
+        value = value,
+        holeCard = None,
+      )
+    ))
   }
 
   // @TODO: validate stand action process
   def validateRequest(flow: Flow): Unit = {}
 
-  private def hasSoft(dealer: DealerContext): Boolean = {
-    val hasAce = dealer.hand.head.rank.equals(Rank.ACE)
-    hasAce && dealer.value == dealerSoftValue
+  private def hasSoft(hand: Hand, value: Int): Boolean = {
+    hand.length == 2 &&
+      hand.head.rank.equals(Rank.ACE) &&
+      value == dealerSoftValue
   }
 
   private def drawCard(flow: Flow): Card = {
