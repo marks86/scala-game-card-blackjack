@@ -30,7 +30,7 @@ final class StandAction(settings: StandActionSettings) extends BaseAction {
     val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
     val dealer = gameContext.dealer
 
-    var hand = dealer.hand :+ dealer.holeCard.get
+    var hand = dealer.hand ++ dealer.holeCard
     var value = calcHandValue(hand)
     val hasNext = () ⇒ value < dealerStandValue || hasSoft(hand, value)
 
