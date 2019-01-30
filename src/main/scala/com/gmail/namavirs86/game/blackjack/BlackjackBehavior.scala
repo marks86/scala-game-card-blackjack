@@ -24,7 +24,7 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
 
     gameContext = updateDealerContext(gameContext)
 
-    gameContext = isRoundEnded(gameContext)
+    gameContext = updateRoundEnded(gameContext)
 
     gameContext = determineOutcome(gameContext)
 
@@ -76,7 +76,7 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
     )
   }
 
-  private def isRoundEnded(gameContext: GameContext): GameContext = {
+  private def updateRoundEnded(gameContext: GameContext): GameContext = {
     val dealer = gameContext.dealer
     val player = gameContext.player
     val bjValue = settings.bjValue
