@@ -6,6 +6,8 @@ import com.gmail.namavirs86.game.card.core.actions.{BaseAction, BaseActionMessag
 import com.gmail.namavirs86.game.card.core.Definitions._
 import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
 
+import scala.util.Random
+
 object DealAction extends BaseActionMessages {
   def props(shoeSettings: ShoeManagerSettings): Props = Props(new DealAction(shoeSettings))
 }
@@ -21,26 +23,17 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
       case None ⇒ List.empty[Card]
     }
 
-    val rng = flow.rng
-    val draw1 = shoeManager.draw(rng, initShoe, isNewRound = true)
-    val draw2 = shoeManager.draw(rng, draw1._2)
-    val draw3 = shoeManager.draw(rng, draw2._2)
-    val draw4 = shoeManager.draw(rng, draw3._2)
-
-    val dealerHand = List(draw1._1)
-    val playerHand = List(draw2._1, draw3._1)
-    val holeCard = Some(draw4._1)
-    val shoe = draw4._2
+    val (cards, shoe) = drawCards(count = 4, initShoe, flow.rng)
 
     Some(GameContext(
       dealer = DealerContext(
-        hand = dealerHand,
+        hand = List(cards.head),
         value = 0,
-        holeCard = holeCard,
+        holeCard = Some(cards(3)),
         hasBJ = false,
       ),
       player = PlayerContext(
-        hand = playerHand,
+        hand = List(cards(1), cards(2)),
         value = 0,
         hasBJ = false,
       ),
@@ -54,5 +47,18 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
 
   // @TODO: validate deal action request
   def validateRequest(flow: Flow): Unit = {}
+
+  private def drawCards(count: Int, shoe: Shoe, rng: Random): (List[Card], Shoe) = {
+    Stream.iterate((List.empty[Card], shoe))(input ⇒ {
+      val (c, s) = input
+      val isNewRound = c.isEmpty
+      val (card, resultShoe) = shoeManager.draw(rng, s, isNewRound)
+      val cards = c :+ card
+      (cards, resultShoe)
+    })
+      .dropWhile(_._1.length != count)
+      .head
+  }
+
 
 }

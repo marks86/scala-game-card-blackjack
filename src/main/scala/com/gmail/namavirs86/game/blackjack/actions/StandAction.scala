@@ -8,6 +8,8 @@ import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
 import com.gmail.namavirs86.game.card.core.ShoeManager
 import com.gmail.namavirs86.game.card.core.actions.{BaseAction, BaseActionMessages}
 
+import scala.util.Random
+
 object StandAction extends BaseActionMessages {
   def props(settings: StandActionSettings): Props = Props(new StandAction(settings))
 }
@@ -31,17 +33,7 @@ final class StandAction(settings: StandActionSettings) extends BaseAction {
     val dealer = gameContext.dealer
     val rng = flow.rng
 
-    var hand = dealer.hand ++ dealer.holeCard
-    var value = calcHandValue(hand)
-    var shoe = gameContext.shoe
-    val hasNext = () ⇒ value < dealerStandValue || hasSoft(hand, value)
-
-    while (hasNext()) {
-      val draw = shoeManager.draw(rng, shoe)
-      hand = hand :+ draw._1
-      value = calcHandValue(hand)
-      shoe = draw._2
-    }
+    val (hand, value, shoe) = drawToDealer(gameContext, rng)
 
     Some(gameContext.copy(
       dealer.copy(
@@ -55,6 +47,26 @@ final class StandAction(settings: StandActionSettings) extends BaseAction {
 
   // @TODO: validate stand action process
   def validateRequest(flow: Flow): Unit = {}
+
+  private def drawToDealer(gameContext: GameContext, rng: Random): (Hand, Int, Shoe) = {
+    val dealer = gameContext.dealer
+    val initHand = dealer.hand ++ dealer.holeCard
+    val initValue = calcHandValue(initHand)
+    val initShoe = gameContext.shoe
+
+    Stream.iterate((initHand, initValue, initShoe))(input ⇒ {
+      val (h, _, s) = input
+      val (card, shoe) = shoeManager.draw(rng, s)
+      val hand = h :+ card
+      val value = calcHandValue(hand)
+      (hand, value, shoe)
+    })
+      .dropWhile(output ⇒ {
+        val (h, v, _) = output
+        v < dealerStandValue || hasSoft(h, v)
+      })
+      .head
+  }
 
   private def hasSoft(hand: Hand, value: Int): Boolean = {
     hand.length == 2 &&
