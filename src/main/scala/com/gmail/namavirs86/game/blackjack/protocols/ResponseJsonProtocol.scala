@@ -4,10 +4,12 @@ import com.gmail.namavirs86.game.card.core.Definitions.Outcome.Outcome
 import com.gmail.namavirs86.game.card.core.Definitions.Rank.Rank
 import com.gmail.namavirs86.game.card.core.Definitions.Suit.Suit
 import com.gmail.namavirs86.game.card.core.Definitions._
-import spray.json.{DefaultJsonProtocol, DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat}
-import spray.json.DefaultJsonProtocol.{jsonFormat2, jsonFormat3, jsonFormat6}
+import com.gmail.namavirs86.game.card.core.protocols.CoreJsonProtocol
+import spray.json._
 
-object ResponseJsonProtocol extends DefaultJsonProtocol {
+object ResponseJsonProtocol extends CoreJsonProtocol {
+
+  import DefaultJsonProtocol._
 
   implicit object suitFormat extends JsonFormat[Suit] {
     val string2Suit: Map[JsValue, Suit] =
