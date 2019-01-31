@@ -3,6 +3,8 @@ package com.gmail.namavirs86.game.blackjack.adapters
 import akka.actor.Props
 import com.gmail.namavirs86.game.card.core.Definitions._
 import com.gmail.namavirs86.game.card.core.adapters.{BaseResponseAdapter, BaseResponseAdapterMessages}
+import spray.json._
+import com.gmail.namavirs86.game.blackjack.protocols.ResponseJsonProtocol._
 
 object ResponseAdapter extends BaseResponseAdapterMessages {
   def props: Props = Props(new ResponseAdapter())
@@ -11,7 +13,7 @@ object ResponseAdapter extends BaseResponseAdapterMessages {
 final class ResponseAdapter extends BaseResponseAdapter {
   val id = "responseAdapter"
 
-  def process(flow: Flow): Option[GamePlayResponse] = {
+  def process(flow: Flow): Option[JsValue] = {
     flow.gameContext match {
       case Some(gameContext: GameContext) ⇒
         val dealer = gameContext.dealer
@@ -31,7 +33,7 @@ final class ResponseAdapter extends BaseResponseAdapter {
           bet = flow.requestContext.bet,
           totalWin = gameContext.totalWin,
           roundEnded = gameContext.roundEnded,
-        ))
+        ).toJson)
       case None ⇒ None
     }
   }
