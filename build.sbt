@@ -18,4 +18,4 @@ lazy val root = (project in file(".")).
       "com.lihaoyi" %% "pprint" % "0.5.3"
     )
   )
-  .dependsOn(RootProject(file("../scala-game-card-core")) % "test->test;compile->compile")
+  .dependsOn(RootProject(uri("https://github.com/marks86/scala-game-card-core.git")) % "test->test;compile->compile")
