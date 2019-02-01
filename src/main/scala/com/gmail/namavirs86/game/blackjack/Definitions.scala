@@ -4,7 +4,7 @@ import com.gmail.namavirs86.game.card.core.Definitions.{ActionType, CardValues, 
 
 object Definitions {
 
-  case class BehaviorSettings(
+  final case class BehaviorSettings(
                                cardValues: CardValues,
                                bjValue: Int,
                                dealerStandValue: Int,
@@ -13,7 +13,7 @@ object Definitions {
                                payoutMultiplier: Float,
                              )
 
-  case class StandActionSettings(
+  final case class StandActionSettings(
                                   shoeSettings: ShoeManagerSettings,
                                   cardValues: CardValues,
                                   dealerStandValue: Int,
