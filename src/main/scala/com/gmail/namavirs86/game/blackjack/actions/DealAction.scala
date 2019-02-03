@@ -4,8 +4,6 @@ import akka.actor.Props
 import com.gmail.namavirs86.game.card.core.ShoeManager
 import com.gmail.namavirs86.game.card.core.actions.{BaseAction, BaseActionMessages}
 import com.gmail.namavirs86.game.card.core.Definitions._
-import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
-
 import scala.util.Random
 
 object DealAction extends BaseActionMessages {
@@ -59,6 +57,4 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
       .dropWhile(_._1.length != count)
       .head
   }
-
-
 }
