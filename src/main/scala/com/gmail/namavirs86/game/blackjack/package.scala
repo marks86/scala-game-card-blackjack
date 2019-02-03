@@ -41,8 +41,8 @@ package object blackjack {
       ),
       BlackjackActionType.STAND → StandAction.props(
         StandActionSettings(
-          shoeManagerSettings,
-          cardValues,
+          shoeSettings = shoeManagerSettings,
+          cardValues = cardValues,
           dealerStandValue = 17,
           dealerSoftValue = 17,
           bjValue = 21,
@@ -52,7 +52,7 @@ package object blackjack {
     responseAdapter = ResponseAdapter.props,
     behavior = BlackjackBehavior.props(
       BehaviorSettings(
-        cardValues,
+        cardValues = cardValues,
         bjValue = 21,
         dealerStandValue = 17,
         softValue = 17,
