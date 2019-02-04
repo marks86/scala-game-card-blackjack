@@ -1,13 +1,13 @@
 
 ## One seat Blackjack card game implementation based on Scala Akka actors
 
-# Supports three basic actions:
+### Supports three basic actions:
 
 * Deal
 * Hit
 * Stand
 
-# Allows to configure:
+### Allows to configure:
 
 * Deck count
 * Cut card position
@@ -16,14 +16,12 @@
 * Default payout multiplier
 * Blackjack payout multiplier
 
-
 <br />
 <br />
 
 ##
 
 ![alt text](docs/scala-game-card-blackjack.jpg)
-
 
 <br />
 <br />
