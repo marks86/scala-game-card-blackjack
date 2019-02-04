@@ -28,10 +28,6 @@
 sbt test
 ```
 
-
-<br />
-<br />
-
 ##
 
 ![alt text](docs/scala-game-card-blackjack.jpg)
