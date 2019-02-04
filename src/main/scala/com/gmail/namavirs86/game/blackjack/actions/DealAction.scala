@@ -36,7 +36,7 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
         hasBJ = false,
       ),
       shoe = shoe,
-      bet = None,
+      bet = flow.requestContext.bet,
       totalWin = 0f,
       outcome = None,
       roundEnded = true,

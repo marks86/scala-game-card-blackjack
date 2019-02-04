@@ -52,6 +52,7 @@ class DealActionSpec(_system: ActorSystem)
       dealer.hand shouldBe List(Card(Rank.TWO, Suit.CLUBS))
       player.hand shouldBe List(Card(Rank.THREE, Suit.CLUBS), Card(Rank.FIVE, Suit.CLUBS))
       dealer.holeCard shouldBe Some(Card(Rank.FOUR, Suit.CLUBS))
+      gameContext.bet shouldBe Some(1f)
     }
   }
 }

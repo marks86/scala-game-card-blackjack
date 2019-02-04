@@ -30,7 +30,7 @@ final class ResponseAdapter extends BaseResponseAdapter {
             hasBJ = player.hasBJ,
           ),
           outcome = gameContext.outcome,
-          bet = flow.requestContext.bet,
+          bet = gameContext.bet,
           totalWin = gameContext.totalWin,
           roundEnded = gameContext.roundEnded,
         ).toJson)
