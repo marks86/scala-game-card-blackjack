@@ -42,3 +42,10 @@ sbt test
 ##
 
 ![alt text](docs/sd-scala-game-card-blackjack.jpg)
+
+<br />
+
+### Further work
+
+* Add stakes
+* Action request validation
