@@ -16,6 +16,19 @@
 * Default payout multiplier
 * Blackjack payout multiplier
 
+
+### Prerequisites
+* JDK 1.8
+* Scala 2.12.8
+* sbt 1.2.8
+
+### Tests
+
+```
+sbt test
+```
+
+
 <br />
 <br />
 
