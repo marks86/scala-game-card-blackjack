@@ -2,7 +2,7 @@ package com.gmail.namavirs86.game.blackjack.actions
 
 import akka.actor.Props
 import com.gmail.namavirs86.game.card.core.Definitions._
-import com.gmail.namavirs86.game.blackjack.Definitions.StandActionSettings
+import com.gmail.namavirs86.game.blackjack.Definitions.{BlackjackContext, Hand, StandActionSettings}
 import com.gmail.namavirs86.game.blackjack.utils.CardUtils
 import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
 import com.gmail.namavirs86.game.card.core.ShoeManager
@@ -14,7 +14,7 @@ object StandAction extends BaseActionMessages {
   def props(settings: StandActionSettings): Props = Props(new StandAction(settings))
 }
 
-final class StandAction(settings: StandActionSettings) extends BaseAction {
+final class StandAction(settings: StandActionSettings) extends BaseAction[BlackjackContext] {
   val id = "standAction"
 
   private val StandActionSettings(
@@ -28,7 +28,7 @@ final class StandAction(settings: StandActionSettings) extends BaseAction {
   private val shoeManager = new ShoeManager(shoeSettings)
   private val cardUtils = new CardUtils()
 
-  def process(flow: Flow): Option[GameContext] = {
+  def process(flow: Flow[BlackjackContext]): Option[BlackjackContext] = {
     val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
     val dealer = gameContext.dealer
     val rng = flow.rng
@@ -46,9 +46,9 @@ final class StandAction(settings: StandActionSettings) extends BaseAction {
   }
 
   // @TODO: validate stand action process
-  def validateRequest(flow: Flow): Unit = {}
+  def validateRequest(flow: Flow[BlackjackContext]): Unit = {}
 
-  private def drawToDealer(gameContext: GameContext, rng: Random): (Hand, Int, Shoe) = {
+  private def drawToDealer(gameContext: BlackjackContext, rng: Random): (Hand, Int, Shoe) = {
     val dealer = gameContext.dealer
     val initHand = dealer.hand ++ dealer.holeCard
     val initValue = calcHandValue(initHand)

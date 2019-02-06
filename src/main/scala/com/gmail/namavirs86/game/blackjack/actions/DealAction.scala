@@ -1,21 +1,23 @@
 package com.gmail.namavirs86.game.blackjack.actions
 
 import akka.actor.Props
+import com.gmail.namavirs86.game.blackjack.Definitions.{BlackjackContext, DealerContext, PlayerContext}
 import com.gmail.namavirs86.game.card.core.ShoeManager
 import com.gmail.namavirs86.game.card.core.actions.{BaseAction, BaseActionMessages}
 import com.gmail.namavirs86.game.card.core.Definitions._
+
 import scala.util.Random
 
 object DealAction extends BaseActionMessages {
   def props(shoeSettings: ShoeManagerSettings): Props = Props(new DealAction(shoeSettings))
 }
 
-final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
+final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction[BlackjackContext] {
   val id = "dealAction"
 
   private val shoeManager = new ShoeManager(shoeSettings)
 
-  def process(flow: Flow): Option[GameContext] = {
+  def process(flow: Flow[BlackjackContext]): Option[BlackjackContext] = {
     val initShoe = flow.gameContext match {
       case Some(context: GameContext) ⇒ context.shoe
       case None ⇒ List.empty[Card]
@@ -23,7 +25,7 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
 
     val (cards, shoe) = drawCards(count = 4, initShoe, flow.rng)
 
-    Some(GameContext(
+    Some(BlackjackContext(
       dealer = DealerContext(
         hand = List(cards.head),
         value = 0,
@@ -44,7 +46,7 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
   }
 
   // @TODO: validate deal action request
-  def validateRequest(flow: Flow): Unit = {}
+  def validateRequest(flow: Flow[BlackjackContext]): Unit = {}
 
   private def drawCards(count: Int, shoe: Shoe, rng: Random): (List[Card], Shoe) = {
     Stream.iterate((List.empty[Card], shoe))(input ⇒ {

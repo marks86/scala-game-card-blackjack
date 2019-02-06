@@ -1,6 +1,7 @@
 package com.gmail.namavirs86.game.blackjack.actions
 
 import akka.actor.Props
+import com.gmail.namavirs86.game.blackjack.Definitions.BlackjackContext
 import com.gmail.namavirs86.game.card.core.Definitions.{Flow, GameContext, ShoeManagerSettings}
 import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
 import com.gmail.namavirs86.game.card.core.ShoeManager
@@ -10,12 +11,12 @@ object HitAction extends BaseActionMessages {
   def props(shoeSettings: ShoeManagerSettings): Props = Props(new HitAction(shoeSettings))
 }
 
-final class HitAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
+final class HitAction(shoeSettings: ShoeManagerSettings) extends BaseAction[BlackjackContext] {
   val id = "hitAction"
 
   private val shoeManager = new ShoeManager(shoeSettings)
 
-  def process(flow: Flow): Option[GameContext] = {
+  def process(flow: Flow[BlackjackContext]): Option[BlackjackContext] = {
     val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
     val player = gameContext.player
     val rng = flow.rng
@@ -32,5 +33,5 @@ final class HitAction(shoeSettings: ShoeManagerSettings) extends BaseAction {
   }
 
   // @TODO: validate hit action request
-  def validateRequest(flow: Flow): Unit = {}
+  def validateRequest(flow: Flow[BlackjackContext]): Unit = {}
 }

@@ -1,9 +1,8 @@
 package com.gmail.namavirs86.game.blackjack
 
 import akka.actor.Props
-import com.gmail.namavirs86.game.blackjack.Definitions.{BehaviorSettings, BlackjackActionType}
+import com.gmail.namavirs86.game.blackjack.Definitions._
 import com.gmail.namavirs86.game.blackjack.utils.CardUtils
-import com.gmail.namavirs86.game.card.core.Definitions.Outcome.Outcome
 import com.gmail.namavirs86.game.card.core.{Behavior, BehaviorMessages}
 import com.gmail.namavirs86.game.card.core.Definitions._
 import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
@@ -12,12 +11,12 @@ object BlackjackBehavior extends BehaviorMessages {
   def props(settings: BehaviorSettings): Props = Props(new BlackjackBehavior(settings))
 }
 
-final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
+final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior[BlackjackContext] {
   val id = "blackjackBehavior"
 
   private val cardUtils = new CardUtils()
 
-  def process(flow: Flow): Option[GameContext] = {
+  def process(flow: Flow[BlackjackContext]): Option[GameContext] = {
     var gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
     gameContext = updatePlayerContext(gameContext)
@@ -33,7 +32,7 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
     Some(gameContext)
   }
 
-  private def updatePlayerContext(gameContext: GameContext): GameContext = {
+  private def updatePlayerContext(gameContext: BlackjackContext): BlackjackContext = {
     val cardValues = settings.cardValues
     val bjValue = settings.bjValue
     val player = gameContext.player
@@ -46,7 +45,7 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
     )
   }
 
-  private def updateDealerContext(gameContext: GameContext): GameContext = {
+  private def updateDealerContext(gameContext: BlackjackContext): BlackjackContext = {
     val bjValue = settings.bjValue
     val cardValues = settings.cardValues
     val dealer = gameContext.dealer
@@ -76,7 +75,7 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
     )
   }
 
-  private def updateRoundEnded(gameContext: GameContext): GameContext = {
+  private def updateRoundEnded(gameContext: BlackjackContext): BlackjackContext = {
     val dealer = gameContext.dealer
     val player = gameContext.player
     val bjValue = settings.bjValue
@@ -91,7 +90,7 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
     )
   }
 
-  private def determineOutcome(gameContext: GameContext): GameContext = {
+  private def determineOutcome(gameContext: BlackjackContext): BlackjackContext = {
     val roundEnded = gameContext.roundEnded
 
     if (!roundEnded) {
@@ -116,7 +115,7 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior {
     )
   }
 
-  private def calculateWin(gameContext: GameContext): GameContext = {
+  private def calculateWin(gameContext: BlackjackContext): BlackjackContext = {
     val outcome = gameContext.outcome
     val bet = gameContext.bet.getOrElse(0f)
 

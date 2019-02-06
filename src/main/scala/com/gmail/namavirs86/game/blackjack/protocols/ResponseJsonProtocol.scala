@@ -1,11 +1,12 @@
 package com.gmail.namavirs86.game.blackjack.protocols
 
-import com.gmail.namavirs86.game.card.core.Definitions.Outcome.Outcome
+import spray.json._
+import com.gmail.namavirs86.game.card.core.Definitions.{Card, Rank, Suit}
 import com.gmail.namavirs86.game.card.core.Definitions.Rank.Rank
 import com.gmail.namavirs86.game.card.core.Definitions.Suit.Suit
-import com.gmail.namavirs86.game.card.core.Definitions._
 import com.gmail.namavirs86.game.card.core.protocols.CoreJsonProtocol
-import spray.json._
+import com.gmail.namavirs86.game.blackjack.Definitions._
+import com.gmail.namavirs86.game.blackjack.Definitions.Outcome.Outcome
 
 object ResponseJsonProtocol extends CoreJsonProtocol {
 

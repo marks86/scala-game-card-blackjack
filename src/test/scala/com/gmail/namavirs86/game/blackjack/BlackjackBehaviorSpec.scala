@@ -3,8 +3,8 @@ package com.gmail.namavirs86.game.blackjack
 import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{TestKit, TestProbe}
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
-import com.gmail.namavirs86.game.blackjack.Definitions.{BehaviorSettings, BlackjackActionType}
-import com.gmail.namavirs86.game.card.core.helpers.Helpers
+import com.gmail.namavirs86.game.blackjack.Definitions._
+import com.gmail.namavirs86.game.blackjack.helpers.Helpers
 import com.gmail.namavirs86.game.card.core.Definitions._
 import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
 
@@ -55,7 +55,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
-      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
+      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess[BlackjackContext]]
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.player.value shouldBe 5
@@ -86,7 +86,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
-      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
+      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess[BlackjackContext]]
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
@@ -122,7 +122,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
-      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
+      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess[BlackjackContext]]
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.player shouldBe PlayerContext(
@@ -167,7 +167,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
-      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
+      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess[BlackjackContext]]
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.player shouldBe PlayerContext(
@@ -212,7 +212,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
-      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
+      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess[BlackjackContext]]
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
@@ -259,7 +259,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
-      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
+      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess[BlackjackContext]]
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
@@ -312,7 +312,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
-      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
+      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess[BlackjackContext]]
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
@@ -366,7 +366,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
-      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
+      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess[BlackjackContext]]
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(
@@ -417,7 +417,7 @@ class BlackjackBehaviorSpec(_system: ActorSystem)
 
       bjBehavior.tell(BlackjackBehavior.RequestBehaviorProcess(probe.ref, flow), probe.ref)
 
-      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess]
+      val response = probe.expectMsgType[BlackjackBehavior.ResponseBehaviorProcess[BlackjackContext]]
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
 
       gameContext.dealer shouldBe DealerContext(

@@ -1,6 +1,7 @@
 package com.gmail.namavirs86.game.blackjack.utils
 
-import com.gmail.namavirs86.game.card.core.Definitions.{Card, CardValues, Hand, Rank}
+import com.gmail.namavirs86.game.blackjack.Definitions.Hand
+import com.gmail.namavirs86.game.card.core.Definitions.{Card, CardValues, Rank}
 
 class CardUtils {
 

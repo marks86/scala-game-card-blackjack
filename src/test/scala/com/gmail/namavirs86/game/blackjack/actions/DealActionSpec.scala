@@ -2,9 +2,10 @@ package com.gmail.namavirs86.game.blackjack.actions
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{TestKit, TestProbe}
+import com.gmail.namavirs86.game.blackjack.Definitions.BlackjackContext
+import com.gmail.namavirs86.game.blackjack.helpers.Helpers
 import com.gmail.namavirs86.game.card.core.Definitions.{Card, Rank, ShoeManagerSettings, Suit}
 import com.gmail.namavirs86.game.card.core.Exceptions.NoGameContextException
-import com.gmail.namavirs86.game.card.core.helpers.Helpers
 import org.scalatest.{BeforeAndAfterAll, Matchers, OptionValues, WordSpecLike}
 
 class DealActionSpec(_system: ActorSystem)
@@ -44,7 +45,7 @@ class DealActionSpec(_system: ActorSystem)
 
       action.tell(DealAction.RequestActionProcess(probe.ref, flow), probe.ref)
 
-      val response = probe.expectMsgType[DealAction.ResponseActionProcess]
+      val response = probe.expectMsgType[DealAction.ResponseActionProcess[BlackjackContext]]
       val gameContext = response.flow.gameContext.getOrElse(throw NoGameContextException())
       val dealer = gameContext.dealer
       val player = gameContext.player
