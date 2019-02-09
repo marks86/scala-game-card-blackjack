@@ -1,6 +1,6 @@
 package com.gmail.namavirs86.game.blackjack.helpers
 
-import com.gmail.namavirs86.game.blackjack.Definitions.{BlackjackActionType, BlackjackContext, DealerContext, PlayerContext}
+import com.gmail.namavirs86.game.blackjack.Definitions._
 import com.gmail.namavirs86.game.card.core.Definitions._
 import com.gmail.namavirs86.game.card.core.random.RandomCheating
 

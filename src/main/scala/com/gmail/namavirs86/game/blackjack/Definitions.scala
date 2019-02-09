@@ -1,6 +1,7 @@
 package com.gmail.namavirs86.game.blackjack
 
 import com.gmail.namavirs86.game.blackjack.Definitions.Outcome.Outcome
+import com.gmail.namavirs86.game.card.core.Definitions.Rank.Rank
 import com.gmail.namavirs86.game.card.core.Definitions._
 
 object Definitions {
@@ -89,4 +90,7 @@ object Definitions {
                                 totalWin: Float,
                                 roundEnded: Boolean,
                               ) extends GameContext
+
+  type CardValues = Map[Rank, Int]
+
 }
