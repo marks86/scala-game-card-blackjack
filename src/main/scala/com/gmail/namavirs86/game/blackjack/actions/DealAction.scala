@@ -17,7 +17,7 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction[Bla
 
   private val shoeManager = new ShoeManager(shoeSettings)
 
-  def process(flow: Flow[BlackjackContext]): Option[BlackjackContext] = {
+  def process(flow: Flow[BlackjackContext]): Option[BlackjackContext] = Some {
     val initShoe = flow.gameContext match {
       case Some(context: GameContext) ⇒ context.shoe
       case None ⇒ List.empty[Card]
@@ -25,7 +25,7 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction[Bla
 
     val (cards, shoe) = drawCards(count = 4, initShoe, flow.rng)
 
-    Some(BlackjackContext(
+    BlackjackContext(
       dealer = DealerContext(
         hand = List(cards.head),
         value = 0,
@@ -42,7 +42,7 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction[Bla
       totalWin = 0f,
       outcome = None,
       roundEnded = true,
-    ))
+    )
   }
 
   // @TODO: validate deal action request

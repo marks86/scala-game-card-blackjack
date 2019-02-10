@@ -28,21 +28,21 @@ final class StandAction(settings: StandActionSettings) extends BaseAction[Blackj
   private val shoeManager = new ShoeManager(shoeSettings)
   private val cardUtils = new CardUtils()
 
-  def process(flow: Flow[BlackjackContext]): Option[BlackjackContext] = {
+  def process(flow: Flow[BlackjackContext]): Option[BlackjackContext] = Some {
     val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
     val dealer = gameContext.dealer
     val rng = flow.rng
 
     val (hand, value, shoe) = drawToDealer(gameContext, rng)
 
-    Some(gameContext.copy(
+    gameContext.copy(
       dealer.copy(
         hand = hand,
         value = value,
         holeCard = None,
       ),
       shoe = shoe
-    ))
+    )
   }
 
   // @TODO: validate stand action process

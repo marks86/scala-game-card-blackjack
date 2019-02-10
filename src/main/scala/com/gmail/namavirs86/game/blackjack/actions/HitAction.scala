@@ -16,7 +16,7 @@ final class HitAction(shoeSettings: ShoeManagerSettings) extends BaseAction[Blac
 
   private val shoeManager = new ShoeManager(shoeSettings)
 
-  def process(flow: Flow[BlackjackContext]): Option[BlackjackContext] = {
+  def process(flow: Flow[BlackjackContext]): Option[BlackjackContext] = Some {
     val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
     val player = gameContext.player
     val rng = flow.rng
@@ -24,12 +24,12 @@ final class HitAction(shoeSettings: ShoeManagerSettings) extends BaseAction[Blac
     val (card, shoe) = shoeManager.draw(rng, gameContext.shoe)
     val hand = player.hand :+ card
 
-    Some(gameContext.copy(
+    gameContext.copy(
       player = player.copy(
         hand = hand
       ),
       shoe = shoe,
-    ))
+    )
   }
 
   // @TODO: validate hit action request
