@@ -19,7 +19,7 @@ final class DealAction(shoeSettings: ShoeManagerSettings) extends BaseAction[Bla
 
   def process(flow: Flow[BlackjackContext]): Option[BlackjackContext] = Some {
     val initShoe = flow.gameContext match {
-      case Some(context: GameContext) ⇒ context.shoe
+      case Some(context: BlackjackContext) ⇒ context.shoe
       case None ⇒ List.empty[Card]
     }
 
