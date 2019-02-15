@@ -45,8 +45,8 @@ class HitActionSpec(_system: ActorSystem)
       val dealerHand = gameContext.dealer.hand
       val playerHand = gameContext.player.hand
 
-      dealerHand shouldBe ListBuffer()
-      playerHand shouldBe ListBuffer(Card(Rank.TWO, Suit.CLUBS))
+      dealerHand shouldBe List()
+      playerHand shouldBe List(Card(Rank.TWO, Suit.CLUBS))
     }
   }
 
