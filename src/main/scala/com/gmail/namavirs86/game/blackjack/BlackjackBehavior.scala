@@ -16,24 +16,19 @@ final class BlackjackBehavior(settings: BehaviorSettings) extends Behavior[Black
 
   private val cardUtils = new CardUtils()
 
-  def process(flow: Flow[BlackjackContext]): Option[GameContext] = Some {
+  def process(flow: Flow[BlackjackContext]): Option[BlackjackContext] = Some {
     val gameContext = flow.gameContext.getOrElse(throw NoGameContextException())
 
-    val fnList: Array[BlackjackContext => BlackjackContext] = Array(
-      updatePlayerContext,
-      updateDealerContext,
-      updateRoundEnded,
-      determineOutcome,
-      calculateWin
+    Array(
+      updatePlayerContext _,
+      updateDealerContext _,
+      updateRoundEnded _,
+      determineOutcome _,
+      calculateWin _
     )
-
-    Stream.iterate((gameContext, 0))(input ⇒ {
-      val (c, i) = input
-      (fnList(i)(c), i + 1)
-    })
-      .dropWhile(_._2 != fnList.length)
-      .head
-      ._1
+      .foldLeft(gameContext) {
+        case (ctx, fn) ⇒ fn(ctx)
+      }
   }
 
   private def updatePlayerContext(gameContext: BlackjackContext): BlackjackContext = {
